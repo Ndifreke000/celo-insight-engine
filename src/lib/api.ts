@@ -112,6 +112,20 @@ export const deployMicroModel = async (model: any) => {
   return response.json();
 };
 
+export const predictPrice = async (asset: string) => {
+  const response = await fetch(`${API_BASE_URL}/ai/price/predict`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ asset }),
+  });
+  return response.json();
+};
+
+export const getIndexerMetrics = async () => {
+  const response = await fetch(`${API_BASE_URL}/indexer/metrics`);
+  return response.json();
+};
+
 // Health check
 export const healthCheck = async () => {
   const response = await fetch(`${API_BASE_URL}/health`);

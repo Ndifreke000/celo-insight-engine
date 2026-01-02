@@ -20,6 +20,7 @@ pub type AppState = Arc<RwLock<AppStateInner>>;
 pub struct AppStateInner {
     pub indexer: RealtimeIndexer,
     pub ai_engine: CeloAIEngine,
+    pub celo_client: crate::celo_client::CeloClient,
 }
 
 pub async fn health_check(State(state): State<AppState>) -> impl IntoResponse {
