@@ -6,39 +6,74 @@ const Roadmap = () => {
       phase: "Phase 1",
       title: "The Foundation",
       timeline: "Q1 - Q2",
-      status: "current",
+      status: "completed",
       items: [
         { text: "Launch Rust-based raw data indexer for Celo Testnet (Alfajores)", done: true },
         { text: 'Begin training "Celo-7B" (The custom LLM) on historical data', done: true },
-        { text: "Release API for raw data access", done: false },
+        { text: "Release API for raw data access", done: true },
       ],
     },
     {
       phase: "Phase 2",
       title: "The Brain",
       timeline: "Q3",
-      status: "upcoming",
+      status: "completed",
       items: [
-        { text: "Deploy the Inference Engine", done: false },
-        { text: "Integrate Sentiment Analysis from Twitter/Discord feeds", done: false },
-        { text: "Launch Smart Contract Explainer tool", done: false },
+        { text: "Deploy the Inference Engine", done: true },
+        { text: "Integrate Sentiment Analysis from Twitter/Discord feeds", done: true },
+        { text: "Launch Smart Contract Explainer tool", done: true },
       ],
     },
     {
       phase: "Phase 3",
       title: "The Oracle",
       timeline: "Q4",
+      status: "completed",
+      items: [
+        { text: "Mainnet Launch", done: true },
+        { text: "Enable zkML proofs for on-chain verification", done: true },
+        { text: "Allow developers to deploy micro-models on infrastructure", done: true },
+      ],
+    },
+    {
+      phase: "Phase 4",
+      title: "The Ecosystem",
+      timeline: "2026 Q1",
+      status: "current",
+      items: [
+        { text: "Launch Developer SDK and Documentation Portal", done: true },
+        { text: "Enable Multi-Chain Support (Ethereum, Polygon, Arbitrum)", done: false },
+        { text: "Release AI Agent Marketplace", done: false },
+      ],
+    },
+    {
+      phase: "Phase 5",
+      title: "The Network",
+      timeline: "2026 Q2-Q3",
+      status: "upcoming",
+      items: [
+        { text: "Decentralized Inference Node Network", done: false },
+        { text: "Governance Token Launch and DAO Formation", done: false },
+        { text: "Cross-chain AI Oracle Protocol", done: false },
+      ],
+    },
+    {
+      phase: "Phase 6",
+      title: "The Future",
+      timeline: "2026 Q4+",
       status: "future",
       items: [
-        { text: "Mainnet Launch", done: false },
-        { text: "Enable zkML proofs for on-chain verification", done: false },
-        { text: "Allow developers to deploy micro-models on infrastructure", done: false },
+        { text: "Enterprise Solutions and Private Deployments", done: false },
+        { text: "Advanced AI Models (100B+ parameters)", done: false },
+        { text: "Global AI Infrastructure Network", done: false },
       ],
     },
   ];
 
   const getStatusColor = (status: string) => {
     switch (status) {
+      case "completed":
+        return "bg-green-600 text-white";
       case "current":
         return "bg-primary text-primary-foreground";
       case "upcoming":
@@ -52,6 +87,8 @@ const Roadmap = () => {
 
   const getBorderColor = (status: string) => {
     switch (status) {
+      case "completed":
+        return "border-green-600/50";
       case "current":
         return "border-primary/50";
       case "upcoming":
@@ -80,8 +117,8 @@ const Roadmap = () => {
           </p>
         </div>
 
-        <div className="max-w-5xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {phases.map((phase, index) => (
               <div
                 key={index}

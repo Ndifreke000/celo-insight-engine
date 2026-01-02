@@ -2,6 +2,24 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Zap, Brain, Shield } from "lucide-react";
 
 const Hero = () => {
+  const handleStartBuilding = () => {
+    const productsSection = document.getElementById('products');
+    if (productsSection) {
+      productsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  const handleReadWhitepaper = () => {
+    // Option 1: Scroll to roadmap section
+    const roadmapSection = document.getElementById('roadmap');
+    if (roadmapSection) {
+      roadmapSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    
+    // Option 2: Open whitepaper URL (uncomment and add your URL)
+    // window.open('https://your-whitepaper-url.com/whitepaper.pdf', '_blank');
+  };
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
       {/* Background Effects */}
@@ -48,11 +66,21 @@ const Hero = () => {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-12 sm:mb-16 px-4">
-            <Button variant="hero" size="xl" className="w-full sm:w-auto group">
+            <Button 
+              variant="hero" 
+              size="xl" 
+              className="w-full sm:w-auto group"
+              onClick={handleStartBuilding}
+            >
               Start Building
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Button>
-            <Button variant="glass" size="xl" className="w-full sm:w-auto">
+            <Button 
+              variant="glass" 
+              size="xl" 
+              className="w-full sm:w-auto"
+              onClick={handleReadWhitepaper}
+            >
               Read Whitepaper
             </Button>
           </div>

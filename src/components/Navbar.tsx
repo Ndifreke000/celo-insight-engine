@@ -13,6 +13,28 @@ const Navbar = () => {
     { label: "Roadmap", href: "#roadmap" },
   ];
 
+  const handleSmoothScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    const targetId = href.replace('#', '');
+    const element = document.getElementById(targetId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setIsOpen(false);
+    }
+  };
+
+  const handleDocs = () => {
+    // TODO: Add documentation link
+    window.open('https://docs.example.com', '_blank');
+  };
+
+  const handleGetStarted = () => {
+    const productsSection = document.getElementById('products');
+    if (productsSection) {
+      productsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border/50">
       <div className="container mx-auto px-4 sm:px-6">
@@ -33,6 +55,7 @@ const Navbar = () => {
               <a
                 key={link.label}
                 href={link.href}
+                onClick={(e) => handleSmoothScroll(e, link.href)}
                 className="text-muted-foreground hover:text-foreground transition-colors duration-200 text-sm font-medium"
               >
                 {link.label}
@@ -42,10 +65,10 @@ const Navbar = () => {
 
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center gap-3">
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="sm" onClick={handleDocs}>
               Docs
             </Button>
-            <Button variant="hero" size="sm">
+            <Button variant="hero" size="sm" onClick={handleGetStarted}>
               Get Started
             </Button>
           </div>
@@ -67,17 +90,17 @@ const Navbar = () => {
                 <a
                   key={link.label}
                   href={link.href}
-                  onClick={() => setIsOpen(false)}
+                  onClick={(e) => handleSmoothScroll(e, link.href)}
                   className="text-muted-foreground hover:text-foreground transition-colors duration-200 text-sm font-medium px-2 py-2"
                 >
                   {link.label}
                 </a>
               ))}
               <div className="flex flex-col gap-2 pt-4 border-t border-border/50">
-                <Button variant="ghost" size="sm" className="justify-start">
+                <Button variant="ghost" size="sm" className="justify-start" onClick={handleDocs}>
                   Docs
                 </Button>
-                <Button variant="hero" size="sm">
+                <Button variant="hero" size="sm" onClick={handleGetStarted}>
                   Get Started
                 </Button>
               </div>
