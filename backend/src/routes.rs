@@ -30,6 +30,9 @@ pub fn api_routes(state: AppState) -> Router {
         .route("/blocks/:block_number", get(handlers::get_block))
         .route("/transactions", get(handlers::get_transactions))
         
+        // ============ Price Data ============
+        .route("/price/:asset", get(handlers::get_price_data))
+        
         // ============ Phase 2: AI Inference (Legacy) ============
         .route("/inference", post(handlers::inference))
         .route("/sentiment", get(handlers::analyze_sentiment))

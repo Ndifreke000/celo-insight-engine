@@ -92,6 +92,15 @@ export const explainContract = async (contractAddress: string): Promise<Contract
   return response.json();
 };
 
+export const securityAudit = async (code: string) => {
+  const response = await fetch(`${API_BASE_URL}/ai/security/audit`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ code }),
+  });
+  return response.json();
+};
+
 // ============ Phase 3: The Oracle ============
 
 export const verifyZkmlProof = async (proof: any) => {
@@ -129,5 +138,11 @@ export const getIndexerMetrics = async () => {
 // Health check
 export const healthCheck = async () => {
   const response = await fetch(`${API_BASE_URL}/health`);
+  return response.json();
+};
+
+// Price Data
+export const getPriceData = async (asset: string) => {
+  const response = await fetch(`${API_BASE_URL}/price/${asset}`);
   return response.json();
 };

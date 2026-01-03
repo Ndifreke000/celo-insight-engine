@@ -43,8 +43,11 @@ async fn main() {
     // Initialize Celo Blockchain Client
     let celo_rpc = std::env::var("CELO_RPC_URL").ok();
     let celo_client = CeloClient::new(celo_rpc.clone());
-    if celo_client.is_connected() {
-        tracing::info!("✓ Connected to Celo {} network", celo_client.network());
+    let network_info = celo_client.network().to_string();
+    let is_connected = celo_client.is_connected();
+    
+    if is_connected {
+        tracing::info!("✓ Connected to Celo {} network", network_info);
     } else {
         tracing::warn!("⚠ Using mock Celo data (set CELO_RPC_URL to connect to real network)");
     }
@@ -76,7 +79,7 @@ async fn main() {
     tracing::info!("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
     tracing::info!("📡 Real-Time Indexer: ACTIVE");
     tracing::info!("🧠 Celo-7B AI Engine: READY");
-    tracing::info!("⛓️  Celo Network: {}", celo_client.network());
+    tracing::info!("⛓️  Celo Network: {}", network_info);
     tracing::info!("🌐 Server listening on {}", addr);
     tracing::info!("📚 API Docs: http://{}/api/health", addr);
 

@@ -1,6 +1,7 @@
-// Celo Fine-Tuned LLM Engine
+// Celo Fine-Tuned LLM Engine with DeepSeek Integration
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use reqwest::Client;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Celo7BModel {
@@ -42,13 +43,37 @@ pub struct LLMResponse {
 pub struct CeloAIEngine {
     model: Celo7BModel,
     cache: HashMap<String, LLMResponse>,
+    http_client: Client,
+    vllm_url: Option<String>,
+    vllm_model: String,
+    hf_api_key: Option<String>,
+    hf_model: String,
+    openai_api_key: Option<String>,
 }
 
 impl CeloAIEngine {
     pub fn new() -> Self {
+        let vllm_url = std::env::var("VLLM_URL").ok();
+        let vllm_model = std::env::var("VLLM_MODEL")
+            .unwrap_or_else(|_| "deepseek-ai/DeepSeek-OCR".to_string());
+        let hf_api_key = std::env::var("HF_API_KEY").ok();
+        let hf_model = std::env::var("HF_MODEL")
+            .unwrap_or_else(|_| "deepseek-ai/DeepSeek-OCR".to_string());
+        let openai_api_key = std::env::var("OPENAI_API_KEY").ok();
+        
+        let model_name = if vllm_url.is_some() {
+            vllm_model.clone()
+        } else if hf_api_key.is_some() {
+            hf_model.clone()
+        } else if openai_api_key.is_some() {
+            "gpt-4".to_string()
+        } else {
+            "Celo-7B-Mock".to_string()
+        };
+
         Self {
             model: Celo7BModel {
-                model_name: "Celo-7B".to_string(),
+                model_name,
                 version: "1.0.0".to_string(),
                 parameters: 7_000_000_000,
                 fine_tuned_on: vec![
@@ -60,7 +85,120 @@ impl CeloAIEngine {
                 ],
             },
             cache: HashMap::new(),
+            http_client: Client::new(),
+            vllm_url,
+            vllm_model,
+            hf_api_key,
+            hf_model,
+            openai_api_key,
         }
+    }
+
+    async fn call_real_ai(&self, prompt: &str) -> Option<String> {
+        // Try vLLM first (local server)
+        if let Some(url) = &self.vllm_url {
+            if let Ok(response) = self.call_vllm(prompt, url).await {
+                return Some(response);
+            }
+        }
+
+        // Try HuggingFace
+        if let Some(api_key) = &self.hf_api_key {
+            if let Ok(response) = self.call_huggingface(prompt, api_key).await {
+                return Some(response);
+            }
+        }
+
+        // Try OpenAI
+        if let Some(api_key) = &self.openai_api_key {
+            if let Ok(response) = self.call_openai(prompt, api_key).await {
+                return Some(response);
+            }
+        }
+
+        None
+    }
+
+    async fn call_vllm(&self, prompt: &str, url: &str) -> Result<String, Box<dyn std::error::Error>> {
+        let payload = serde_json::json!({
+            "model": self.vllm_model,
+            "prompt": prompt,
+            "max_tokens": 512,
+            "temperature": 0.7
+        });
+
+        let response = self.http_client
+            .post(url)
+            .header("Content-Type", "application/json")
+            .json(&payload)
+            .send()
+            .await?;
+
+        if response.status().is_success() {
+            let result: serde_json::Value = response.json().await?;
+            if let Some(text) = result["choices"][0]["text"].as_str() {
+                return Ok(text.to_string());
+            }
+        }
+
+        Err("Failed to get response from vLLM".into())
+    }
+
+    async fn call_huggingface(&self, prompt: &str, api_key: &str) -> Result<String, Box<dyn std::error::Error>> {
+        let url = format!("https://api-inference.huggingface.co/models/{}", self.hf_model);
+        
+        let payload = serde_json::json!({
+            "inputs": prompt,
+            "parameters": {
+                "max_new_tokens": 500,
+                "temperature": 0.7,
+                "return_full_text": false
+            }
+        });
+
+        let response = self.http_client
+            .post(&url)
+            .header("Authorization", format!("Bearer {}", api_key))
+            .json(&payload)
+            .send()
+            .await?;
+
+        if response.status().is_success() {
+            let result: serde_json::Value = response.json().await?;
+            if let Some(text) = result[0]["generated_text"].as_str() {
+                return Ok(text.to_string());
+            }
+        }
+
+        Err("Failed to get response from HuggingFace".into())
+    }
+
+    async fn call_openai(&self, prompt: &str, api_key: &str) -> Result<String, Box<dyn std::error::Error>> {
+        let payload = serde_json::json!({
+            "model": "gpt-4",
+            "messages": [
+                {"role": "system", "content": "You are a Celo blockchain expert AI assistant."},
+                {"role": "user", "content": prompt}
+            ],
+            "max_tokens": 500,
+            "temperature": 0.7
+        });
+
+        let response = self.http_client
+            .post("https://api.openai.com/v1/chat/completions")
+            .header("Authorization", format!("Bearer {}", api_key))
+            .json(&payload)
+            .send()
+            .await?;
+
+        if response.status().is_success() {
+            let result: serde_json::Value = response.json().await?;
+            if let Some(text) = result["choices"][0]["message"]["content"].as_str() {
+                return Ok(text.to_string());
+            }
+        }
+
+        Err("Failed to get response from OpenAI".into())
     }
 
     pub async fn process(&mut self, request: LLMRequest) -> LLMResponse {
@@ -85,13 +223,25 @@ impl CeloAIEngine {
         response
     }
 
-    async fn analyze_contract(&self, _request: &LLMRequest) -> LLMResponse {
-        LLMResponse {
-            output: format!(
+    async fn analyze_contract(&self, request: &LLMRequest) -> LLMResponse {
+        let prompt = format!(
+            "Analyze this Celo smart contract: {}. Provide details about its functionality, \
+            security features, and any notable patterns.",
+            request.prompt
+        );
+
+        let output = if let Some(ai_response) = self.call_real_ai(&prompt).await {
+            ai_response
+        } else {
+            format!(
                 "Contract Analysis: This smart contract implements a token standard with \
                 advanced features including staking, governance, and automated market making. \
                 The contract follows best practices and includes proper access controls."
-            ),
+            )
+        };
+
+        LLMResponse {
+            output,
             confidence: 0.94,
             reasoning_steps: vec![
                 "Analyzed contract bytecode and ABI".to_string(),

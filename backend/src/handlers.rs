@@ -44,11 +44,36 @@ pub async fn health_check(State(state): State<AppState>) -> impl IntoResponse {
 // ============ Phase 1: The Foundation ============
 
 // Celo Blockchain Data Indexer
-pub async fn get_blocks(Query(params): Query<BlockQueryParams>) -> impl IntoResponse {
+pub async fn get_blocks(
+    State(state): State<AppState>,
+    Query(params): Query<BlockQueryParams>,
+) -> impl IntoResponse {
     let limit = params.limit.unwrap_or(10).min(100);
-    let offset = params.offset.unwrap_or(0);
+    let state = state.read().await;
     
-    // Mock data - in production, this would query actual Celo blockchain
+    // Try to get real block data
+    if state.celo_client.is_connected() {
+        if let Ok(latest_block) = state.celo_client.get_latest_block().await {
+            let mut blocks = vec![latest_block];
+            
+            // Get previous blocks
+            for i in 1..limit {
+                if let Ok(block) = state.celo_client.get_block_by_number(blocks[0].number - i as u64).await {
+                    blocks.push(block);
+                }
+            }
+            
+            return Json(json!({
+                "blocks": blocks,
+                "source": "celo-rpc",
+                "network": state.celo_client.network(),
+                "count": blocks.len()
+            }));
+        }
+    }
+    
+    // Fallback to mock data
+    let offset = params.offset.unwrap_or(0);
     let blocks: Vec<BlockData> = (0..limit)
         .map(|i| BlockData {
             block_number: 1000000 + offset + i as u64,
@@ -61,13 +86,37 @@ pub async fn get_blocks(Query(params): Query<BlockQueryParams>) -> impl IntoResp
 
     Json(json!({
         "blocks": blocks,
+        "source": "mock",
         "total": 1000000,
         "limit": limit,
         "offset": offset
     }))
 }
 
-pub async fn get_block(Path(block_number): Path<u64>) -> impl IntoResponse {
+pub async fn get_block(
+    State(state): State<AppState>,
+    Path(block_number): Path<u64>,
+) -> impl IntoResponse {
+    let state = state.read().await;
+    
+    // Try real data first
+    if state.celo_client.is_connected() {
+        if let Ok(celo_block) = state.celo_client.get_block_by_number(block_number).await {
+            return Json(json!({
+                "block": BlockData {
+                    block_number: celo_block.number,
+                    block_hash: celo_block.hash,
+                    timestamp: celo_block.timestamp,
+                    transaction_count: celo_block.transaction_count as u32,
+                    gas_used: celo_block.gas_used.parse().unwrap_or(0),
+                },
+                "source": "celo-rpc",
+                "network": state.celo_client.network()
+            }));
+        }
+    }
+    
+    // Fallback
     let block = BlockData {
         block_number,
         block_hash: format!("0x{:064x}", block_number),
@@ -76,12 +125,64 @@ pub async fn get_block(Path(block_number): Path<u64>) -> impl IntoResponse {
         gas_used: 8500000,
     };
 
-    Json(block)
+    Json(json!({
+        "block": block,
+        "source": "mock"
+    }))
 }
 
-pub async fn get_transactions(Query(params): Query<TransactionQueryParams>) -> impl IntoResponse {
+pub async fn get_transactions(
+    State(state): State<AppState>,
+    Query(params): Query<TransactionQueryParams>,
+) -> impl IntoResponse {
     let limit = params.limit.unwrap_or(10).min(100);
+    let state = state.read().await;
     
+    // Try to get real transaction data from latest blocks
+    if state.celo_client.is_connected() {
+        if let Ok(latest_block) = state.celo_client.get_latest_block().await {
+            // For now, return block-level transaction info
+            // TODO: Implement full transaction details with get_transaction()
+            let mut transactions = Vec::new();
+            
+            for i in 0..limit.min(10) {
+                if let Ok(block) = state.celo_client.get_block_by_number(latest_block.number - i as u64).await {
+                    // Create transaction entries from block data
+                    for j in 0..block.transaction_count.min(limit as usize - transactions.len()) {
+                        transactions.push(TransactionData {
+                            tx_hash: format!("{}_{}", block.hash, j),
+                            from_address: block.miner.clone(),
+                            to_address: Some("0x0000000000000000000000000000000000000000".to_string()),
+                            value: "0".to_string(),
+                            gas_price: "1000000000".to_string(),
+                            block_number: block.number,
+                            timestamp: block.timestamp,
+                        });
+                        
+                        if transactions.len() >= limit as usize {
+                            break;
+                        }
+                    }
+                    
+                    if transactions.len() >= limit as usize {
+                        break;
+                    }
+                }
+            }
+            
+            if !transactions.is_empty() {
+                return Json(json!({
+                    "transactions": transactions,
+                    "source": "celo-rpc",
+                    "network": state.celo_client.network(),
+                    "count": transactions.len(),
+                    "note": "Showing block-level transaction data. Full tx details coming soon."
+                }));
+            }
+        }
+    }
+    
+    // Fallback to mock data
     let transactions: Vec<TransactionData> = (0..limit)
         .map(|i| TransactionData {
             tx_hash: format!("0x{:064x}", i),
@@ -96,6 +197,7 @@ pub async fn get_transactions(Query(params): Query<TransactionQueryParams>) -> i
 
     Json(json!({
         "transactions": transactions,
+        "source": "mock",
         "total": 5000000
     }))
 }
@@ -412,6 +514,55 @@ pub async fn get_model_info(State(state): State<AppState>) -> impl IntoResponse 
     let state = state.read().await;
     let model_info = state.ai_engine.get_model_info().clone();
     Json(model_info)
+}
+
+// ============ Price Data Endpoints ============
+
+pub async fn get_price_data(Path(asset): Path<String>) -> impl IntoResponse {
+    // Fetch real price from CoinGecko
+    let client = reqwest::Client::new();
+    let asset_id = match asset.to_lowercase().as_str() {
+        "celo" => "celo",
+        "cusd" => "celo-dollar",
+        "ceur" => "celo-euro",
+        _ => "celo",
+    };
+    
+    let url = format!(
+        "https://api.coingecko.com/api/v3/simple/price?ids={}&vs_currencies=usd&include_24hr_change=true&include_market_cap=true",
+        asset_id
+    );
+    
+    match client.get(&url).send().await {
+        Ok(response) => {
+            if response.status().is_success() {
+                match response.json::<serde_json::Value>().await {
+                    Ok(data) => {
+                        return Json(json!({
+                            "asset": asset,
+                            "price_usd": data[asset_id]["usd"],
+                            "change_24h": data[asset_id]["usd_24h_change"],
+                            "market_cap": data[asset_id]["usd_market_cap"],
+                            "source": "coingecko",
+                            "timestamp": get_current_timestamp()
+                        }));
+                    }
+                    Err(_) => {}
+                }
+            }
+        }
+        Err(_) => {}
+    }
+    
+    // Fallback to mock data
+    Json(json!({
+        "asset": asset,
+        "price_usd": 0.65,
+        "change_24h": 2.5,
+        "market_cap": 500000000,
+        "source": "mock",
+        "timestamp": get_current_timestamp()
+    }))
 }
 
 #[derive(Debug, Deserialize)]

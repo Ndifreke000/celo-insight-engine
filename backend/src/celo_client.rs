@@ -14,6 +14,8 @@ pub struct CeloBlock {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+// Remove unused transaction methods - will implement when needed
+#[allow(dead_code)]
 pub struct CeloTransaction {
     pub hash: String,
     pub from: String,
@@ -25,27 +27,37 @@ pub struct CeloTransaction {
     pub status: Option<u64>,
 }
 
+#[derive(Clone)]
 pub struct CeloClient {
     provider: Option<Arc<Provider<Http>>>,
     network: String,
 }
 
 impl CeloClient {
-    pub fn new(rpc_url: Option<String>) -> Self {
-        let network = if rpc_url.is_some() {
-            "alfajores"
+    pub fn new(primary_rpc: Option<String>) -> Self {
+        // Try primary (Alchemy), fallback to Forno
+        let fallback_rpc = "https://forno.celo.org".to_string();
+        
+        let (provider, network) = if let Some(url) = primary_rpc {
+            match Provider::<Http>::try_from(url.clone()) {
+                Ok(p) => (Some(Arc::new(p)), "mainnet-alchemy".to_string()),
+                Err(_) => {
+                    // Fallback to Forno
+                    match Provider::<Http>::try_from(fallback_rpc) {
+                        Ok(p) => (Some(Arc::new(p)), "mainnet-forno".to_string()),
+                        Err(_) => (None, "mock".to_string()),
+                    }
+                }
+            }
         } else {
-            "mock"
+            // Try Forno as fallback
+            match Provider::<Http>::try_from(fallback_rpc) {
+                Ok(p) => (Some(Arc::new(p)), "mainnet-forno".to_string()),
+                Err(_) => (None, "mock".to_string()),
+            }
         };
 
-        let provider = rpc_url.and_then(|url| {
-            Provider::<Http>::try_from(url).ok().map(Arc::new)
-        });
-
-        Self {
-            provider,
-            network: network.to_string(),
-        }
+        Self { provider, network }
     }
 
     pub async fn get_latest_block(&self) -> Result<CeloBlock, String> {
@@ -87,6 +99,7 @@ impl CeloClient {
         }
     }
 
+    #[allow(dead_code)]
     pub async fn get_transaction(&self, tx_hash: &str) -> Result<CeloTransaction, String> {
         if let Some(provider) = &self.provider {
             let hash: H256 = tx_hash.parse().map_err(|e| format!("Invalid hash: {}", e))?;
@@ -114,6 +127,7 @@ impl CeloClient {
         }
     }
 
+    #[allow(dead_code)]
     pub async fn get_balance(&self, address: &str) -> Result<String, String> {
         if let Some(provider) = &self.provider {
             let addr: Address = address.parse().map_err(|e| format!("Invalid address: {}", e))?;
@@ -158,6 +172,7 @@ impl CeloClient {
         block
     }
 
+    #[allow(dead_code)]
     fn mock_transaction(&self, hash: &str) -> CeloTransaction {
         CeloTransaction {
             hash: hash.to_string(),
