@@ -61,7 +61,6 @@ const AIPlayground = () => {
       const response = await api.runInference({
         model: "celo-7b",
         input: customQuery,
-        task_type: "GeneralQuery",
       });
       setResult(response);
     } catch (error) {
