@@ -7,15 +7,16 @@ import DeveloperAPI from "@/components/DeveloperAPI";
 import Problem from "@/components/Problem";
 import Solution from "@/components/Solution";
 import Comparison from "@/components/Comparison";
-import Architecture from "@/components/Architecture";
+import InteractiveArchitecture from "@/components/InteractiveArchitecture";
 import UseCases from "@/components/UseCases";
 import WhyCelo from "@/components/WhyCelo";
 import Roadmap from "@/components/Roadmap";
+import FAQ from "@/components/FAQ";
 import Footer from "@/components/Footer";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background scroll-smooth">
       <Navbar />
       <Hero />
       <Products />
@@ -25,10 +26,11 @@ const Index = () => {
       <Problem />
       <Solution />
       <Comparison />
-      <Architecture />
+      <InteractiveArchitecture />
       <UseCases />
       <WhyCelo />
       <Roadmap />
+      <FAQ />
       <Footer />
     </div>
   );

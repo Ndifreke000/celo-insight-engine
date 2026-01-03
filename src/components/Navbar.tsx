@@ -1,16 +1,19 @@
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const navLinks = [
+    { label: "Products", href: "#products" },
     { label: "Problem", href: "#problem" },
     { label: "Solution", href: "#solution" },
     { label: "Architecture", href: "#architecture" },
     { label: "Use Cases", href: "#use-cases" },
     { label: "Roadmap", href: "#roadmap" },
+    { label: "FAQ", href: "#faq" },
   ];
 
   const handleSmoothScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
@@ -18,7 +21,14 @@ const Navbar = () => {
     const targetId = href.replace('#', '');
     const element = document.getElementById(targetId);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const navHeight = 80;
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - navHeight;
+      
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
       setIsOpen(false);
     }
   };
@@ -28,10 +38,7 @@ const Navbar = () => {
   };
 
   const handleGetStarted = () => {
-    const productsSection = document.getElementById('products');
-    if (productsSection) {
-      productsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    window.location.href = '/app';
   };
 
   return (
@@ -54,15 +61,16 @@ const Navbar = () => {
           </a>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-8">
+          <div className="hidden xl:flex items-center gap-6">
             {navLinks.map((link) => (
               <a
                 key={link.label}
                 href={link.href}
                 onClick={(e) => handleSmoothScroll(e, link.href)}
-                className="text-muted-foreground hover:text-foreground transition-colors duration-200 text-sm font-medium"
+                className="text-muted-foreground hover:text-foreground transition-colors duration-200 text-sm font-medium relative group"
               >
                 {link.label}
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full" />
               </a>
             ))}
           </div>
@@ -72,15 +80,17 @@ const Navbar = () => {
             <Button variant="ghost" size="sm" onClick={handleDocs}>
               Docs
             </Button>
-            <Button variant="hero" size="sm" onClick={handleGetStarted}>
-              Get Started
-            </Button>
+            <Link to="/app">
+              <Button variant="hero" size="sm">
+                Launch Dashboard
+              </Button>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="lg:hidden p-2 text-muted-foreground hover:text-foreground"
+            className="xl:hidden p-2 text-muted-foreground hover:text-foreground"
           >
             {isOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -88,14 +98,14 @@ const Navbar = () => {
 
         {/* Mobile Menu */}
         {isOpen && (
-          <div className="lg:hidden py-4 border-t border-border/50">
-            <div className="flex flex-col gap-4">
+          <div className="xl:hidden py-4 border-t border-border/50 animate-fade-in">
+            <div className="flex flex-col gap-2">
               {navLinks.map((link) => (
                 <a
                   key={link.label}
                   href={link.href}
                   onClick={(e) => handleSmoothScroll(e, link.href)}
-                  className="text-muted-foreground hover:text-foreground transition-colors duration-200 text-sm font-medium px-2 py-2"
+                  className="text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-colors duration-200 text-sm font-medium px-3 py-2 rounded-lg"
                 >
                   {link.label}
                 </a>
@@ -104,9 +114,11 @@ const Navbar = () => {
                 <Button variant="ghost" size="sm" className="justify-start" onClick={handleDocs}>
                   Docs
                 </Button>
-                <Button variant="hero" size="sm" onClick={handleGetStarted}>
-                  Get Started
-                </Button>
+                <Link to="/app">
+                  <Button variant="hero" size="sm" className="w-full">
+                    Launch Dashboard
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>

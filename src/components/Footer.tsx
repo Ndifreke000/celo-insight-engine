@@ -83,7 +83,7 @@ const Footer = () => {
 
           <div className="flex flex-col sm:flex-row items-center justify-between pt-6 sm:pt-8 border-t border-border/50 gap-4">
             <p className="text-xs sm:text-sm text-muted-foreground text-center sm:text-left">
-              © 2024 Sentinel-X. Built on Celo.
+              © 2026 Sentinel-X. Built on Celo.
             </p>
             <div className="flex items-center gap-4">
               <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
