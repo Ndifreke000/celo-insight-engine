@@ -1,6 +1,9 @@
 import { TrendingUp, Shield, Scale, ArrowRight } from "lucide-react";
+import { useScrollReveal, getStaggerDelay } from "@/hooks/useScrollReveal";
 
 const UseCases = () => {
+  const { ref: sectionRef, isVisible: sectionVisible } = useScrollReveal();
+
   const useCases = [
     {
       icon: TrendingUp,
@@ -34,7 +37,12 @@ const UseCases = () => {
   return (
     <section id="use-cases" className="py-16 sm:py-24 lg:py-32 relative bg-secondary/20">
       <div className="container mx-auto px-4 sm:px-6">
-        <div className="text-center mb-12 sm:mb-16">
+        <div 
+          ref={sectionRef}
+          className={`text-center mb-12 sm:mb-16 transition-all duration-700 ${
+            sectionVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          }`}
+        >
           <span className="text-xs sm:text-sm text-primary font-medium tracking-wider uppercase mb-3 sm:mb-4 block">
             Use Cases
           </span>
@@ -52,7 +60,10 @@ const UseCases = () => {
           {useCases.map((useCase, index) => (
             <div
               key={index}
-              className="group p-6 sm:p-8 rounded-2xl bg-card border border-border/50 hover:border-border transition-all duration-300 overflow-hidden relative"
+              className={`group p-6 sm:p-8 rounded-2xl bg-card border border-border/50 hover:border-border transition-all duration-700 overflow-hidden relative ${
+                sectionVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+              }`}
+              style={getStaggerDelay(index, 150)}
             >
               {/* Background Gradient */}
               <div className={`absolute inset-0 bg-gradient-to-b ${useCase.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
@@ -76,7 +87,7 @@ const UseCases = () => {
                   </div>
 
                   <div className="flex justify-center">
-                    <ArrowRight className="w-5 h-5 text-muted-foreground" />
+                    <ArrowRight className="w-5 h-5 text-muted-foreground rotate-90" />
                   </div>
 
                   <div className="p-3 sm:p-4 rounded-lg bg-primary/10 border border-primary/20">

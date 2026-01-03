@@ -1,6 +1,9 @@
 import { CheckCircle, Circle, Clock } from "lucide-react";
+import { useScrollReveal, getStaggerDelay } from "@/hooks/useScrollReveal";
 
 const Roadmap = () => {
+  const { ref: sectionRef, isVisible: sectionVisible } = useScrollReveal();
+
   const phases = [
     {
       phase: "Phase 1",
@@ -88,22 +91,27 @@ const Roadmap = () => {
   const getBorderColor = (status: string) => {
     switch (status) {
       case "completed":
-        return "border-green-600/50";
+        return "border-green-600/50 hover:border-green-600";
       case "current":
-        return "border-primary/50";
+        return "border-primary/50 hover:border-primary";
       case "upcoming":
-        return "border-accent/50";
+        return "border-accent/50 hover:border-accent";
       case "future":
-        return "border-border/50";
+        return "border-border/50 hover:border-border";
       default:
-        return "border-border/50";
+        return "border-border/50 hover:border-border";
     }
   };
 
   return (
     <section id="roadmap" className="py-16 sm:py-24 lg:py-32 relative bg-secondary/20">
       <div className="container mx-auto px-4 sm:px-6">
-        <div className="text-center mb-12 sm:mb-16">
+        <div 
+          ref={sectionRef}
+          className={`text-center mb-12 sm:mb-16 transition-all duration-700 ${
+            sectionVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          }`}
+        >
           <span className="text-xs sm:text-sm text-primary font-medium tracking-wider uppercase mb-3 sm:mb-4 block">
             Roadmap
           </span>
@@ -122,7 +130,10 @@ const Roadmap = () => {
             {phases.map((phase, index) => (
               <div
                 key={index}
-                className={`p-6 sm:p-8 rounded-2xl bg-card border ${getBorderColor(phase.status)} transition-all duration-300`}
+                className={`p-6 sm:p-8 rounded-2xl bg-card border ${getBorderColor(phase.status)} transition-all duration-700 hover:scale-[1.02] ${
+                  sectionVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+                }`}
+                style={getStaggerDelay(index, 100)}
               >
                 <div className="flex items-center justify-between mb-4 sm:mb-6">
                   <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(phase.status)}`}>
@@ -135,11 +146,17 @@ const Roadmap = () => {
 
                 <div className="space-y-3 sm:space-y-4">
                   {phase.items.map((item, itemIndex) => (
-                    <div key={itemIndex} className="flex items-start gap-3">
+                    <div 
+                      key={itemIndex} 
+                      className={`flex items-start gap-3 transition-all duration-500 ${
+                        sectionVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4"
+                      }`}
+                      style={getStaggerDelay(index * 3 + itemIndex, 50)}
+                    >
                       {item.done ? (
                         <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-primary mt-0.5 flex-shrink-0" />
                       ) : phase.status === "current" ? (
-                        <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground mt-0.5 flex-shrink-0" />
+                        <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground mt-0.5 flex-shrink-0 animate-pulse" />
                       ) : (
                         <Circle className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground/50 mt-0.5 flex-shrink-0" />
                       )}

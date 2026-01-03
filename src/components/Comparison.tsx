@@ -1,6 +1,9 @@
-import { Check, X, Minus } from "lucide-react";
+import { Check, X } from "lucide-react";
+import { useScrollReveal, getStaggerDelay } from "@/hooks/useScrollReveal";
 
 const Comparison = () => {
+  const { ref: sectionRef, isVisible: sectionVisible } = useScrollReveal();
+
   const features = [
     {
       feature: "Data Indexing Speed",
@@ -55,7 +58,12 @@ const Comparison = () => {
   return (
     <section className="py-16 sm:py-24 lg:py-32 relative bg-secondary/20">
       <div className="container mx-auto px-4 sm:px-6">
-        <div className="text-center mb-12 sm:mb-16">
+        <div 
+          ref={sectionRef}
+          className={`text-center mb-12 sm:mb-16 transition-all duration-700 ${
+            sectionVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          }`}
+        >
           <span className="text-xs sm:text-sm text-primary font-medium tracking-wider uppercase mb-3 sm:mb-4 block">
             Comparison
           </span>
@@ -69,7 +77,9 @@ const Comparison = () => {
           </p>
         </div>
 
-        <div className="max-w-5xl mx-auto">
+        <div className={`max-w-5xl mx-auto transition-all duration-700 delay-200 ${
+          sectionVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+        }`}>
           {/* Desktop Table */}
           <div className="hidden md:block rounded-2xl overflow-hidden border border-border/50 bg-card">
             <table className="w-full">
@@ -95,7 +105,10 @@ const Comparison = () => {
                 {features.map((row, index) => (
                   <tr 
                     key={index} 
-                    className="border-b border-border/30 last:border-b-0 hover:bg-secondary/30 transition-colors"
+                    className={`border-b border-border/30 last:border-b-0 hover:bg-secondary/30 transition-all duration-500 ${
+                      sectionVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4"
+                    }`}
+                    style={getStaggerDelay(index, 50)}
                   >
                     <td className="p-4 lg:p-6 text-sm font-medium text-foreground">
                       {row.feature}
@@ -123,7 +136,10 @@ const Comparison = () => {
             {features.map((row, index) => (
               <div 
                 key={index}
-                className="p-4 rounded-xl bg-card border border-border/50"
+                className={`p-4 rounded-xl bg-card border border-border/50 transition-all duration-500 ${
+                  sectionVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+                }`}
+                style={getStaggerDelay(index, 80)}
               >
                 <h4 className="font-semibold text-foreground mb-3">{row.feature}</h4>
                 <div className="space-y-2">
@@ -147,7 +163,9 @@ const Comparison = () => {
           </div>
 
           {/* Summary */}
-          <div className="mt-8 sm:mt-12 p-6 sm:p-8 rounded-2xl bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 border border-primary/20">
+          <div className={`mt-8 sm:mt-12 p-6 sm:p-8 rounded-2xl bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 border border-primary/20 transition-all duration-700 delay-500 ${
+            sectionVisible ? "opacity-100 scale-100" : "opacity-0 scale-95"
+          }`}>
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="text-center sm:text-left">
                 <h4 className="text-lg sm:text-xl font-bold mb-2">Ready to upgrade your indexing?</h4>

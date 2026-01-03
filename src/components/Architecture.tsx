@@ -1,6 +1,10 @@
 import { Layers, Cpu, Shield, Wifi } from "lucide-react";
+import { useScrollReveal, getStaggerDelay } from "@/hooks/useScrollReveal";
 
 const Architecture = () => {
+  const { ref: sectionRef, isVisible: sectionVisible } = useScrollReveal();
+  const { ref: codeRef, isVisible: codeVisible } = useScrollReveal();
+
   const layers = [
     {
       icon: Layers,
@@ -47,7 +51,12 @@ const Architecture = () => {
   return (
     <section id="architecture" className="py-16 sm:py-24 lg:py-32 relative">
       <div className="container mx-auto px-4 sm:px-6">
-        <div className="text-center mb-12 sm:mb-16">
+        <div 
+          ref={sectionRef}
+          className={`text-center mb-12 sm:mb-16 transition-all duration-700 ${
+            sectionVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          }`}
+        >
           <span className="text-xs sm:text-sm text-primary font-medium tracking-wider uppercase mb-3 sm:mb-4 block">
             Technical Architecture
           </span>
@@ -64,15 +73,25 @@ const Architecture = () => {
         <div className="max-w-5xl mx-auto">
           <div className="relative">
             {/* Connection Line */}
-            <div className="absolute left-6 sm:left-8 top-0 bottom-0 w-px bg-gradient-to-b from-primary via-accent to-gold-light hidden md:block" />
+            <div className={`absolute left-6 sm:left-8 top-0 bottom-0 w-px bg-gradient-to-b from-primary via-accent to-gold-light hidden md:block transition-all duration-1000 ${
+              sectionVisible ? "opacity-100 scale-y-100" : "opacity-0 scale-y-0"
+            }`} style={{ transformOrigin: 'top' }} />
 
             <div className="space-y-6 sm:space-y-8">
               {layers.map((layer, index) => (
-                <div key={index} className="relative pl-0 md:pl-20">
+                <div 
+                  key={index} 
+                  className={`relative pl-0 md:pl-20 transition-all duration-700 ${
+                    sectionVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-8"
+                  }`}
+                  style={getStaggerDelay(index, 150)}
+                >
                   {/* Connection Dot */}
-                  <div className="absolute left-4 sm:left-6 top-8 w-4 h-4 rounded-full bg-gradient-to-br from-primary to-accent hidden md:block" />
+                  <div className={`absolute left-4 sm:left-6 top-8 w-4 h-4 rounded-full bg-gradient-to-br from-primary to-accent hidden md:block transition-all duration-500 ${
+                    sectionVisible ? "scale-100" : "scale-0"
+                  }`} style={getStaggerDelay(index, 150)} />
                   
-                  <div className={`p-6 sm:p-8 rounded-2xl bg-gradient-to-br ${layer.color} border ${layer.borderColor} backdrop-blur`}>
+                  <div className={`p-6 sm:p-8 rounded-2xl bg-gradient-to-br ${layer.color} border ${layer.borderColor} backdrop-blur hover:scale-[1.02] transition-transform duration-300`}>
                     <div className="flex flex-col lg:flex-row lg:items-start gap-4 sm:gap-6">
                       <div className="flex items-center gap-3 sm:gap-4">
                         <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-secondary/50 flex items-center justify-center flex-shrink-0">
@@ -104,8 +123,13 @@ const Architecture = () => {
         </div>
 
         {/* Code Example */}
-        <div className="mt-12 sm:mt-16 max-w-3xl mx-auto px-4">
-          <div className="p-4 sm:p-6 rounded-2xl bg-card border border-border/50">
+        <div 
+          ref={codeRef}
+          className={`mt-12 sm:mt-16 max-w-3xl mx-auto px-4 transition-all duration-700 ${
+            codeVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          }`}
+        >
+          <div className="p-4 sm:p-6 rounded-2xl bg-card border border-border/50 hover:border-primary/30 transition-colors">
             <div className="flex items-center gap-2 mb-4">
               <div className="w-3 h-3 rounded-full bg-destructive/60" />
               <div className="w-3 h-3 rounded-full bg-primary/60" />

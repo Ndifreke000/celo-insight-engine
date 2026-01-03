@@ -1,6 +1,8 @@
 import { Database, Brain, Zap, Shield, BarChart3, FileCode } from "lucide-react";
+import { useScrollReveal, getStaggerDelay } from "@/hooks/useScrollReveal";
 
 const Products = () => {
+  const { ref: sectionRef, isVisible: sectionVisible } = useScrollReveal();
   const products = [
     {
       icon: Database,
@@ -37,7 +39,12 @@ const Products = () => {
       </div>
 
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
-        <div className="text-center mb-12 sm:mb-16">
+        <div 
+          ref={sectionRef}
+          className={`text-center mb-12 sm:mb-16 transition-all duration-700 ${
+            sectionVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          }`}
+        >
           <span className="text-xs sm:text-sm text-primary font-medium tracking-wider uppercase mb-3 sm:mb-4 block">
             Core Products
           </span>
@@ -85,8 +92,10 @@ const Products = () => {
           {products.map((product, index) => (
             <div
               key={index}
-              className="group relative rounded-2xl overflow-hidden animate-fade-in"
-              style={{ animationDelay: `${index * 0.2}s` }}
+              className={`group relative rounded-2xl overflow-hidden transition-all duration-700 ${
+                sectionVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+              }`}
+              style={getStaggerDelay(index, 200)}
             >
               {/* Gradient Border */}
               <div className={`absolute inset-0 bg-gradient-to-br ${product.gradient} opacity-20 group-hover:opacity-30 transition-opacity duration-500`} />

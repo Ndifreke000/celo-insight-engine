@@ -1,6 +1,9 @@
 import { Smartphone, Layers, Globe } from "lucide-react";
+import { useScrollReveal, getStaggerDelay } from "@/hooks/useScrollReveal";
 
 const WhyCelo = () => {
+  const { ref: sectionRef, isVisible: sectionVisible } = useScrollReveal();
+
   const reasons = [
     {
       icon: Smartphone,
@@ -27,7 +30,12 @@ const WhyCelo = () => {
       </div>
 
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
-        <div className="text-center mb-12 sm:mb-16">
+        <div 
+          ref={sectionRef}
+          className={`text-center mb-12 sm:mb-16 transition-all duration-700 ${
+            sectionVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          }`}
+        >
           <span className="text-xs sm:text-sm text-primary font-medium tracking-wider uppercase mb-3 sm:mb-4 block">
             Why Celo?
           </span>
@@ -45,7 +53,10 @@ const WhyCelo = () => {
           {reasons.map((reason, index) => (
             <div
               key={index}
-              className="text-center p-6 sm:p-8 rounded-2xl bg-card/50 backdrop-blur border border-border/50 hover:border-primary/30 transition-all duration-300"
+              className={`text-center p-6 sm:p-8 rounded-2xl bg-card/50 backdrop-blur border border-border/50 hover:border-primary/30 transition-all duration-700 hover:scale-105 ${
+                sectionVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+              }`}
+              style={getStaggerDelay(index, 150)}
             >
               <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center mx-auto mb-4 sm:mb-6">
                 <reason.icon className="w-7 h-7 sm:w-8 sm:h-8 text-primary" />
