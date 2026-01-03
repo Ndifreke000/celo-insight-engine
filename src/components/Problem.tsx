@@ -1,6 +1,10 @@
 import { Eye, Clock, AlertTriangle } from "lucide-react";
+import { useScrollReveal, getStaggerDelay } from "@/hooks/useScrollReveal";
 
 const Problem = () => {
+  const { ref: sectionRef, isVisible: sectionVisible } = useScrollReveal();
+  const { ref: comparisonRef, isVisible: comparisonVisible } = useScrollReveal();
+
   const problems = [
     {
       icon: Eye,
@@ -25,7 +29,12 @@ const Problem = () => {
   return (
     <section id="problem" className="py-16 sm:py-24 lg:py-32 relative">
       <div className="container mx-auto px-4 sm:px-6">
-        <div className="text-center mb-12 sm:mb-16">
+        <div 
+          ref={sectionRef}
+          className={`text-center mb-12 sm:mb-16 transition-all duration-700 ${
+            sectionVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+          }`}
+        >
           <span className="text-xs sm:text-sm text-primary font-medium tracking-wider uppercase mb-3 sm:mb-4 block">
             The Problem
           </span>
@@ -43,7 +52,10 @@ const Problem = () => {
           {problems.map((problem, index) => (
             <div
               key={index}
-              className="group relative p-6 sm:p-8 rounded-2xl bg-card border border-border/50 hover:border-border transition-all duration-300 hover:-translate-y-1"
+              className={`group relative p-6 sm:p-8 rounded-2xl bg-card border border-border/50 hover:border-border transition-all duration-700 hover:-translate-y-1 ${
+                sectionVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+              }`}
+              style={getStaggerDelay(index, 150)}
             >
               {/* Glow Effect */}
               <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -62,9 +74,16 @@ const Problem = () => {
         </div>
 
         {/* Comparison */}
-        <div className="mt-16 sm:mt-20 max-w-4xl mx-auto px-4">
+        <div 
+          ref={comparisonRef}
+          className="mt-16 sm:mt-20 max-w-4xl mx-auto px-4"
+        >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-            <div className="p-6 sm:p-8 rounded-2xl bg-destructive/10 border border-destructive/20">
+            <div 
+              className={`p-6 sm:p-8 rounded-2xl bg-destructive/10 border border-destructive/20 transition-all duration-700 ${
+                comparisonVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-8"
+              }`}
+            >
               <div className="text-xs sm:text-sm text-destructive font-medium mb-3">Current Indexers</div>
               <h4 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">Like a Library</h4>
               <p className="text-sm sm:text-base text-muted-foreground">
@@ -72,7 +91,11 @@ const Problem = () => {
                 and draw your own conclusions. Slow and manual.
               </p>
             </div>
-            <div className="p-6 sm:p-8 rounded-2xl bg-primary/10 border border-primary/20">
+            <div 
+              className={`p-6 sm:p-8 rounded-2xl bg-primary/10 border border-primary/20 transition-all duration-700 delay-150 ${
+                comparisonVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-8"
+              }`}
+            >
               <div className="text-xs sm:text-sm text-primary font-medium mb-3">Sentinel-X</div>
               <h4 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4">Like a 24/7 News Analyst</h4>
               <p className="text-sm sm:text-base text-muted-foreground">
