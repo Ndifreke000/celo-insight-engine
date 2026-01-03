@@ -11,13 +11,22 @@ const Docs = () => {
         <div className="container mx-auto px-4 sm:px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
+              <Link to="/" className="flex items-center gap-2 group">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary via-accent to-gold-light flex items-center justify-center shadow-lg">
+                  <span className="text-primary-foreground font-bold text-lg">⚡</span>
+                </div>
+                <span className="text-xl font-bold hidden sm:block">
+                  Sentinel<span className="text-gradient-gold">-X</span>
+                </span>
+              </Link>
+              <div className="h-6 w-px bg-border hidden sm:block" />
               <Link to="/">
                 <Button variant="ghost" size="sm">
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Back
                 </Button>
               </Link>
-              <h1 className="text-2xl font-bold">Sentinel-X Documentation</h1>
+              <h1 className="text-xl sm:text-2xl font-bold">Documentation</h1>
             </div>
             <Link to="/app">
               <Button variant="default">

@@ -39,13 +39,18 @@ const Navbar = () => {
       <div className="container mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16 sm:h-20">
           {/* Logo */}
-          <a href="#" className="flex items-center gap-2 sm:gap-3">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-base sm:text-lg">S</span>
+          <a href="/" className="flex items-center gap-2 sm:gap-3 group">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-gradient-to-br from-primary via-accent to-gold-light flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
+              <span className="text-primary-foreground font-bold text-base sm:text-xl">⚡</span>
             </div>
-            <span className="text-lg sm:text-xl font-bold text-foreground">
-              Sentinel<span className="text-gradient-gold">-X</span>
-            </span>
+            <div className="flex flex-col">
+              <span className="text-lg sm:text-xl font-bold text-foreground leading-tight">
+                Sentinel<span className="text-gradient-gold">-X</span>
+              </span>
+              <span className="text-[10px] text-muted-foreground leading-tight hidden sm:block">
+                AI-Enhanced Blockchain Intelligence
+              </span>
+            </div>
           </a>
 
           {/* Desktop Navigation */}
