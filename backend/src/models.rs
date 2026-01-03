@@ -1,18 +1,5 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct Item {
-    pub id: u32,
-    pub name: String,
-    pub description: Option<String>,
-}
-
-#[derive(Debug, Deserialize)]
-pub struct CreateItemRequest {
-    pub name: String,
-    pub description: Option<String>,
-}
-
 // Celo Blockchain Data Models
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct BlockData {
@@ -31,38 +18,6 @@ pub struct TransactionData {
     pub value: String,
     pub gas_price: String,
     pub block_number: u64,
-    pub timestamp: u64,
-}
-
-// AI/ML Models
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct InferenceRequest {
-    pub model: String,
-    pub input: String,
-    pub parameters: Option<InferenceParameters>,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct InferenceParameters {
-    pub temperature: Option<f32>,
-    pub max_tokens: Option<u32>,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct InferenceResponse {
-    pub model: String,
-    pub output: String,
-    pub confidence: f32,
-    pub latency_ms: u64,
-}
-
-// Sentiment Analysis
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct SentimentData {
-    pub source: String, // "twitter" or "discord"
-    pub text: String,
-    pub sentiment: String, // "positive", "negative", "neutral"
-    pub score: f32,
     pub timestamp: u64,
 }
 

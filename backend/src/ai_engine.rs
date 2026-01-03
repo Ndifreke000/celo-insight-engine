@@ -354,22 +354,59 @@ impl CeloAIEngine {
         }
     }
 
-    async fn general_query(&self, _request: &LLMRequest) -> LLMResponse {
+    async fn general_query(&self, request: &LLMRequest) -> LLMResponse {
+        let prompt_with_context = &request.prompt;
+        
+        // Try to get real AI response
+        if let Some(ai_output) = self.call_real_ai(prompt_with_context).await {
+            return LLMResponse {
+                output: ai_output,
+                confidence: 0.92,
+                reasoning_steps: vec![
+                    "Analyzed current blockchain state".to_string(),
+                    "Retrieved relevant Celo documentation".to_string(),
+                    "Generated response using AI model".to_string(),
+                ],
+                sources: vec![
+                    "Celo blockchain (live data)".to_string(),
+                    "AI model inference".to_string(),
+                ],
+                verifiable: true,
+                on_chain_proof: None,
+            };
+        }
+        
+        // Fallback response with blockchain context
+        let output = if prompt_with_context.contains("Blockchain Context:") {
+            format!(
+                "Based on current Celo blockchain data:\n\n\
+                The Celo network is actively processing transactions. \
+                To get AI-powered insights, please configure an AI model (vLLM, HuggingFace, or OpenAI).\n\n\
+                Current blockchain status is available in the Explorer tab."
+            )
+        } else {
+            format!(
+                "I can help you understand Celo blockchain, smart contracts, and DeFi. \
+                However, AI features require configuration.\n\n\
+                To enable intelligent responses:\n\
+                1. Run: ./setup_vllm.sh\n\
+                2. Start: vllm serve deepseek-ai/DeepSeek-OCR\n\
+                Or add HF_API_KEY or OPENAI_API_KEY to backend/.env\n\n\
+                Meanwhile, you can explore real blockchain data in the Explorer tab!"
+            )
+        };
+        
         LLMResponse {
-            output: format!(
-                "Based on the Celo blockchain data and documentation, {}",
-                "I can help you understand smart contracts, analyze transactions, \
-                audit security, and provide insights into the Celo ecosystem."
-            ),
+            output,
             confidence: 0.88,
             reasoning_steps: vec![
-                "Processed natural language query".to_string(),
-                "Retrieved relevant context from knowledge base".to_string(),
-                "Generated response using Celo-7B model".to_string(),
+                "Processed query structure".to_string(),
+                "Checked available data sources".to_string(),
+                "Generated informative response".to_string(),
             ],
             sources: vec![
-                "Celo documentation".to_string(),
-                "Community knowledge base".to_string(),
+                "System configuration".to_string(),
+                "Available features".to_string(),
             ],
             verifiable: false,
             on_chain_proof: None,

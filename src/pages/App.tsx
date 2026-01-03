@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Brain, Search, Shield, TrendingUp, Activity, ArrowLeft } from "lucide-react";
 import * as api from "@/lib/api";
 import { Link } from "react-router-dom";
+import HelpDialog from "@/components/HelpDialog";
 
 const App = () => {
   const [activeTab, setActiveTab] = useState("blocks");
@@ -162,6 +163,7 @@ const App = () => {
               <h1 className="text-2xl font-bold">Sentinel-X Dashboard</h1>
             </div>
             <div className="flex items-center gap-3">
+              <HelpDialog />
               <Badge variant={health?.status === "ok" ? "default" : "destructive"}>
                 <Activity className="w-3 h-3 mr-1" />
                 {health?.status === "ok" ? "Online" : "Offline"}

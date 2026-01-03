@@ -24,8 +24,7 @@ const Navbar = () => {
   };
 
   const handleDocs = () => {
-    // TODO: Add documentation link
-    window.open('https://docs.example.com', '_blank');
+    window.location.href = '/docs';
   };
 
   const handleGetStarted = () => {

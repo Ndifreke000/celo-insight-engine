@@ -23,6 +23,26 @@ pub struct AppStateInner {
     pub celo_client: crate::celo_client::CeloClient,
 }
 
+impl AppStateInner {
+    pub async fn get_blockchain_context(&self) -> String {
+        let mut context = String::new();
+        
+        // Get latest block info
+        if let Ok(block) = self.celo_client.get_latest_block().await {
+            context.push_str(&format!(
+                "Latest Celo Block: #{}\nTimestamp: {}\nTransactions: {}\nGas Used: {}\n",
+                block.number, block.timestamp, block.transaction_count, block.gas_used
+            ));
+        }
+        
+        // Add network info
+        context.push_str(&format!("Network: {}\n", self.celo_client.network()));
+        context.push_str("Blockchain: Celo (EVM-compatible L2)\n");
+        
+        context
+    }
+}
+
 pub async fn health_check(State(state): State<AppState>) -> impl IntoResponse {
     let state = state.read().await;
     let metrics = state.indexer.get_metrics().await;
@@ -204,86 +224,54 @@ pub async fn get_transactions(
 
 // ============ Phase 2: The Brain ============
 
-// AI Inference Engine
-pub async fn inference(Json(request): Json<InferenceRequest>) -> impl IntoResponse {
-    let start_time = get_current_timestamp();
-    
-    // Mock AI inference - in production, this would call actual Celo-7B model
-    let output = match request.model.as_str() {
-        "celo-7b" => format!("AI Analysis: The input '{}' suggests a transaction pattern with high confidence.", request.input),
-        "sentiment" => format!("Sentiment: Positive (0.85 confidence)"),
-        _ => format!("Model '{}' processed input successfully", request.model),
-    };
-    
-    let end_time = get_current_timestamp();
-    
-    let response = InferenceResponse {
-        model: request.model,
-        output,
-        confidence: 0.92,
-        latency_ms: end_time - start_time,
-    };
-
-    Json(response)
-}
-
-// Sentiment Analysis
+// Sentiment Analysis - Real data from social APIs
 pub async fn analyze_sentiment(Query(params): Query<SentimentQueryParams>) -> impl IntoResponse {
     let source = params.source.unwrap_or_else(|| "twitter".to_string());
     
-    let sentiments: Vec<SentimentData> = vec![
-        SentimentData {
-            source: source.clone(),
-            text: "Celo is amazing! Great blockchain for mobile payments.".to_string(),
-            sentiment: "positive".to_string(),
-            score: 0.95,
-            timestamp: get_current_timestamp(),
-        },
-        SentimentData {
-            source: source.clone(),
-            text: "Just deployed my first smart contract on Celo!".to_string(),
-            sentiment: "positive".to_string(),
-            score: 0.88,
-            timestamp: get_current_timestamp() - 3600,
-        },
-        SentimentData {
-            source: source.clone(),
-            text: "Network congestion is a bit high today.".to_string(),
-            sentiment: "negative".to_string(),
-            score: -0.45,
-            timestamp: get_current_timestamp() - 7200,
-        },
-    ];
-
+    // TODO: Integrate real Twitter/Discord APIs
+    // For now, return error indicating feature needs API keys
     Json(json!({
-        "sentiments": sentiments,
-        "summary": {
-            "positive": 2,
-            "negative": 1,
-            "neutral": 0,
-            "average_score": 0.46
-        }
+        "error": "Sentiment analysis requires Twitter/Discord API keys",
+        "message": "Add TWITTER_API_KEY or DISCORD_BOT_TOKEN to enable this feature",
+        "source": source
     }))
 }
 
-// Smart Contract Explainer
-pub async fn explain_contract(Json(request): Json<ContractExplanationRequest>) -> impl IntoResponse {
+// Smart Contract Explainer - Uses AI with blockchain context
+pub async fn explain_contract(
+    State(state): State<AppState>,
+    Json(request): Json<ContractExplanationRequest>,
+) -> impl IntoResponse {
+    // Get blockchain context
+    let blockchain_context = {
+        let state_read = state.read().await;
+        state_read.get_blockchain_context().await
+    };
+    
+    let llm_request = LLMRequest {
+        prompt: format!(
+            "{}\nExplain smart contract at: {}\nProvide: functionality, security analysis, and gas optimization tips.",
+            blockchain_context, request.contract_address
+        ),
+        context: None,
+        max_tokens: Some(800),
+        temperature: Some(0.7),
+        task_type: TaskType::ContractAnalysis,
+    };
+    
+    let mut state_write = state.write().await;
+    let ai_response = state_write.ai_engine.process(llm_request).await;
+    
+    let security_analysis: Vec<String> = ai_response.reasoning_steps.iter().take(3).cloned().collect();
+    
     let response = ContractExplanationResponse {
         contract_address: request.contract_address.clone(),
-        explanation: format!(
-            "This smart contract at {} is a token contract implementing the ERC-20 standard. \
-            It manages token transfers, approvals, and balance tracking.",
-            request.contract_address
-        ),
-        security_analysis: vec![
-            "✓ No reentrancy vulnerabilities detected".to_string(),
-            "✓ Access control properly implemented".to_string(),
-            "⚠ Consider adding rate limiting for transfers".to_string(),
-        ],
+        explanation: ai_response.output,
+        security_analysis,
         gas_optimization_tips: vec![
-            "Use uint256 instead of smaller uints for gas efficiency".to_string(),
-            "Cache storage variables in memory when used multiple times".to_string(),
-            "Consider using events for off-chain data instead of storage".to_string(),
+            "Use uint256 for gas efficiency".to_string(),
+            "Cache storage variables in memory".to_string(),
+            "Use events for off-chain data".to_string(),
         ],
     };
 
@@ -292,63 +280,19 @@ pub async fn explain_contract(Json(request): Json<ContractExplanationRequest>) -
 
 // ============ Phase 3: The Oracle ============
 
-// zkML Proof Verification
+// zkML endpoints - Placeholder for future implementation
 pub async fn verify_zkml_proof(Json(_proof): Json<serde_json::Value>) -> impl IntoResponse {
     Json(json!({
-        "verified": true,
-        "proof_hash": "0x1234567890abcdef",
-        "verification_time_ms": 45,
-        "on_chain_tx": "0xabcdef1234567890"
+        "error": "zkML verification not yet implemented",
+        "message": "This feature is coming soon"
     }))
 }
 
-// Micro-model Deployment
 pub async fn deploy_micro_model(Json(_model): Json<serde_json::Value>) -> impl IntoResponse {
-    (StatusCode::CREATED, Json(json!({
-        "model_id": "model_123456",
-        "status": "deployed",
-        "endpoint": "https://api.sentinel-x.io/models/model_123456/inference",
-        "deployment_tx": "0xdeadbeef12345678"
+    (StatusCode::NOT_IMPLEMENTED, Json(json!({
+        "error": "Micro-model deployment not yet implemented",
+        "message": "This feature is coming soon"
     })))
-}
-
-// ============ Legacy/Demo Endpoints ============
-
-pub async fn get_items() -> impl IntoResponse {
-    let items = vec![
-        Item {
-            id: 1,
-            name: "Celo Blockchain Indexer".to_string(),
-            description: Some("Real-time blockchain data indexing".to_string()),
-        },
-        Item {
-            id: 2,
-            name: "Celo-7B AI Model".to_string(),
-            description: Some("Fine-tuned LLM for blockchain analysis".to_string()),
-        },
-    ];
-
-    Json(items)
-}
-
-pub async fn get_item(Path(id): Path<u32>) -> impl IntoResponse {
-    let item = Item {
-        id,
-        name: format!("Item {}", id),
-        description: Some("Item description".to_string()),
-    };
-
-    Json(item)
-}
-
-pub async fn create_item(Json(payload): Json<CreateItemRequest>) -> impl IntoResponse {
-    let item = Item {
-        id: 999,
-        name: payload.name,
-        description: payload.description,
-    };
-
-    (StatusCode::CREATED, Json(item))
 }
 
 // Helper structs and functions
@@ -448,8 +392,27 @@ pub async fn celo_llm_query(
     State(state): State<AppState>,
     Json(request): Json<LLMRequest>,
 ) -> impl IntoResponse {
-    let mut state = state.write().await;
-    let response = state.ai_engine.process(request).await;
+    let mut state_write = state.write().await;
+    
+    // Get blockchain context for AI
+    let blockchain_context = {
+        let state_read = state.read().await;
+        state_read.get_blockchain_context().await
+    };
+    
+    // Enhance request with blockchain context
+    let enhanced_request = LLMRequest {
+        prompt: format!(
+            "Blockchain Context:\n{}\n\nUser Query: {}",
+            blockchain_context, request.prompt
+        ),
+        context: request.context,
+        max_tokens: request.max_tokens,
+        temperature: request.temperature,
+        task_type: request.task_type,
+    };
+    
+    let response = state_write.ai_engine.process(enhanced_request).await;
     Json(response)
 }
 
@@ -459,8 +422,17 @@ pub async fn analyze_contract_ai(
 ) -> impl IntoResponse {
     let contract_address = payload["contract_address"].as_str().unwrap_or("");
     
+    // Get blockchain context
+    let blockchain_context = {
+        let state_read = state.read().await;
+        state_read.get_blockchain_context().await
+    };
+    
     let request = LLMRequest {
-        prompt: format!("Analyze smart contract at address: {}", contract_address),
+        prompt: format!(
+            "{}\nAnalyze smart contract at address: {}\nProvide security analysis, functionality overview, and potential risks.",
+            blockchain_context, contract_address
+        ),
         context: None,
         max_tokens: Some(500),
         temperature: Some(0.7),
@@ -497,8 +469,47 @@ pub async fn predict_price_ai(
 ) -> impl IntoResponse {
     let asset = payload["asset"].as_str().unwrap_or("CELO");
     
+    // Get real price data
+    let client = reqwest::Client::new();
+    let asset_id = match asset.to_lowercase().as_str() {
+        "celo" => "celo",
+        "cusd" => "celo-dollar",
+        "ceur" => "celo-euro",
+        _ => "celo",
+    };
+    
+    let url = format!(
+        "https://api.coingecko.com/api/v3/simple/price?ids={}&vs_currencies=usd&include_24hr_change=true&include_market_cap=true&include_24hr_vol=true",
+        asset_id
+    );
+    
+    let price_context = match client.get(&url).send().await {
+        Ok(response) if response.status().is_success() => {
+            match response.json::<serde_json::Value>().await {
+                Ok(data) => format!(
+                    "Current Price: ${}\n24h Change: {}%\nMarket Cap: ${}\n24h Volume: ${}",
+                    data[asset_id]["usd"],
+                    data[asset_id]["usd_24h_change"],
+                    data[asset_id]["usd_market_cap"],
+                    data[asset_id].get("usd_24h_vol").unwrap_or(&serde_json::json!(0))
+                ),
+                Err(_) => String::new(),
+            }
+        }
+        _ => String::new(),
+    };
+    
+    // Get blockchain context
+    let blockchain_context = {
+        let state_read = state.read().await;
+        state_read.get_blockchain_context().await
+    };
+    
     let request = LLMRequest {
-        prompt: format!("Predict price for {} in next 24 hours", asset),
+        prompt: format!(
+            "{}\n{}\n\nPredict {} price for next 24 hours based on current market data and blockchain activity.",
+            blockchain_context, price_context, asset
+        ),
         context: None,
         max_tokens: Some(300),
         temperature: Some(0.5),

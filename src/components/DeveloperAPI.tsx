@@ -2,6 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Code, Copy, ExternalLink } from "lucide-react";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const DeveloperAPI = () => {
   const [copied, setCopied] = useState("");
@@ -164,13 +165,13 @@ const DeveloperAPI = () => {
 
               <div className="flex gap-3">
                 <Button variant="hero" asChild>
-                  <a href="https://github.com/yourusername/sentinel-x" target="_blank" rel="noopener noreferrer">
+                  <Link to="/docs">
                     <ExternalLink className="w-4 h-4 mr-2" />
                     View Full Docs
-                  </a>
+                  </Link>
                 </Button>
                 <Button variant="outline" asChild>
-                  <a href="/api/health" target="_blank" rel="noopener noreferrer">
+                  <a href="http://localhost:3000/api/health" target="_blank" rel="noopener noreferrer">
                     Test API
                   </a>
                 </Button>

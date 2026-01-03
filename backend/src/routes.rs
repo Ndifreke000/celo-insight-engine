@@ -33,18 +33,13 @@ pub fn api_routes(state: AppState) -> Router {
         // ============ Price Data ============
         .route("/price/:asset", get(handlers::get_price_data))
         
-        // ============ Phase 2: AI Inference (Legacy) ============
-        .route("/inference", post(handlers::inference))
+        // ============ Phase 2: AI Inference ============
         .route("/sentiment", get(handlers::analyze_sentiment))
         .route("/contract/explain", post(handlers::explain_contract))
         
-        // ============ Phase 3: zkML & Deployment ============
+        // ============ Phase 3: zkML & Deployment (Coming Soon) ============
         .route("/zkml/verify", post(handlers::verify_zkml_proof))
         .route("/models/deploy", post(handlers::deploy_micro_model))
-        
-        // Legacy demo endpoints
-        .route("/items", get(handlers::get_items).post(handlers::create_item))
-        .route("/items/:id", get(handlers::get_item))
         
         .with_state(state)
 }
