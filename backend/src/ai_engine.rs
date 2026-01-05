@@ -48,20 +48,27 @@ pub struct CeloAIEngine {
     vllm_model: String,
     hf_api_key: Option<String>,
     hf_model: String,
+    groq_api_key: Option<String>,
+    groq_model: String,
     openai_api_key: Option<String>,
 }
 
 impl CeloAIEngine {
     pub fn new() -> Self {
+        let groq_api_key = std::env::var("GROQ_API_KEY").ok();
+        let groq_model = std::env::var("GROQ_MODEL")
+            .unwrap_or_else(|_| "llama-3.3-70b-versatile".to_string());
         let vllm_url = std::env::var("VLLM_URL").ok();
         let vllm_model = std::env::var("VLLM_MODEL")
-            .unwrap_or_else(|_| "deepseek-ai/DeepSeek-OCR".to_string());
+            .unwrap_or_else(|_| "openai/gpt-oss-20b".to_string());
         let hf_api_key = std::env::var("HF_API_KEY").ok();
         let hf_model = std::env::var("HF_MODEL")
-            .unwrap_or_else(|_| "deepseek-ai/DeepSeek-OCR".to_string());
+            .unwrap_or_else(|_| "openai/gpt-oss-20b".to_string());
         let openai_api_key = std::env::var("OPENAI_API_KEY").ok();
         
-        let model_name = if vllm_url.is_some() {
+        let model_name = if groq_api_key.is_some() {
+            groq_model.clone()
+        } else if vllm_url.is_some() {
             vllm_model.clone()
         } else if hf_api_key.is_some() {
             hf_model.clone()
@@ -85,7 +92,12 @@ impl CeloAIEngine {
                 ],
             },
             cache: HashMap::new(),
-            http_client: Client::new(),
+            http_client: Client::builder()
+                .timeout(std::time::Duration::from_secs(30))
+                .build()
+                .unwrap_or_else(|_| Client::new()),
+            groq_api_key,
+            groq_model,
             vllm_url,
             vllm_model,
             hf_api_key,
@@ -95,7 +107,14 @@ impl CeloAIEngine {
     }
 
     async fn call_real_ai(&self, prompt: &str) -> Option<String> {
-        // Try vLLM first (local server)
+        // Try Groq first (fastest)
+        if let Some(api_key) = &self.groq_api_key {
+            if let Ok(response) = self.call_groq(prompt, api_key).await {
+                return Some(response);
+            }
+        }
+
+        // Try vLLM (local server)
         if let Some(url) = &self.vllm_url {
             if let Ok(response) = self.call_vllm(prompt, url).await {
                 return Some(response);
@@ -117,6 +136,41 @@ impl CeloAIEngine {
         }
 
         None
+    }
+
+    async fn call_groq(&self, prompt: &str, api_key: &str) -> Result<String, Box<dyn std::error::Error>> {
+        let payload = serde_json::json!({
+            "model": self.groq_model,
+            "messages": [
+                {
+                    "role": "system",
+                    "content": "You are a Celo blockchain expert AI assistant. Provide clear, accurate, and helpful information about Celo blockchain, smart contracts, DeFi, and related topics."
+                },
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ],
+            "temperature": 0.7,
+            "max_tokens": 1024
+        });
+
+        let response = self.http_client
+            .post("https://api.groq.com/openai/v1/chat/completions")
+            .header("Authorization", format!("Bearer {}", api_key))
+            .header("Content-Type", "application/json")
+            .json(&payload)
+            .send()
+            .await?;
+
+        if response.status().is_success() {
+            let result: serde_json::Value = response.json().await?;
+            if let Some(text) = result["choices"][0]["message"]["content"].as_str() {
+                return Ok(text.to_string());
+            }
+        }
+
+        Err("Failed to get response from Groq".into())
     }
 
     async fn call_vllm(&self, prompt: &str, url: &str) -> Result<String, Box<dyn std::error::Error>> {

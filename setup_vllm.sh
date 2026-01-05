@@ -1,47 +1,50 @@
 #!/bin/bash
 
-echo "=== DeepSeek vLLM Setup ==="
+# Sentinel-X vLLM Setup Script
+# Sets up OpenAI's gpt-oss-20b model for local AI inference
+
+set -e
+
+echo "🚀 Sentinel-X vLLM Setup"
+echo "========================"
+echo ""
+echo "Setting up OpenAI gpt-oss-20b (21B parameters, runs on 16GB RAM)"
+echo "Apache 2.0 licensed - perfect for blockchain AI applications"
 echo ""
 
-# Check if Python is installed
-if ! command -v python3 &> /dev/null; then
-    echo "❌ Python 3 is not installed. Please install Python 3.8+ first."
-    exit 1
+# Check if uv is installed
+if ! command -v uv &> /dev/null; then
+    echo "📦 Installing uv (Python package manager)..."
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+    export PATH="$HOME/.cargo/bin:$PATH"
 fi
 
-echo "✓ Python found: $(python3 --version)"
+echo "✅ uv is installed"
 echo ""
 
-# Check if pip is installed
-if ! command -v pip3 &> /dev/null; then
-    echo "❌ pip3 is not installed. Please install pip first."
-    exit 1
-fi
-
-echo "✓ pip found"
-echo ""
-
-# Install vLLM
-echo "📦 Installing vLLM..."
-pip3 install vllm
-
-if [ $? -eq 0 ]; then
-    echo "✓ vLLM installed successfully"
-else
-    echo "❌ Failed to install vLLM"
-    exit 1
-fi
+# Install vLLM with gpt-oss support
+echo "📦 Installing vLLM with gpt-oss support..."
+uv pip install --pre vllm==0.10.1+gptoss \
+    --extra-index-url https://wheels.vllm.ai/gpt-oss/ \
+    --extra-index-url https://download.pytorch.org/whl/nightly/cu128 \
+    --index-strategy unsafe-best-match
 
 echo ""
-echo "=== Setup Complete ==="
+echo "✅ vLLM installed successfully!"
 echo ""
-echo "To start the DeepSeek server:"
-echo "  vllm serve deepseek-ai/DeepSeek-OCR"
+echo "🎯 To start the AI model server, run:"
 echo ""
-echo "Or run in background:"
-echo "  nohup vllm serve deepseek-ai/DeepSeek-OCR > vllm.log 2>&1 &"
+echo "   vllm serve openai/gpt-oss-20b"
 echo ""
-echo "The server will run on: http://localhost:8000"
+echo "Or for faster startup with lower memory:"
 echo ""
-echo "Your backend is already configured to use it!"
-echo "Just restart: cd backend && cargo run"
+echo "   vllm serve openai/gpt-oss-20b --max-model-len 4096"
+echo ""
+echo "The model will be available at: http://localhost:8000"
+echo ""
+echo "💡 Tips:"
+echo "  - First run will download the model (~40GB)"
+echo "  - Requires 16GB+ RAM"
+echo "  - GPU recommended but not required"
+echo "  - Set reasoning level in prompts: 'Reasoning: low/medium/high'"
+echo ""

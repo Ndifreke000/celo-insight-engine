@@ -73,12 +73,14 @@ const Dashboard = () => {
       setMetrics(data);
       
       // Update stats from real metrics
-      setStats(prev => ({
-        totalInferences: data.total_feeds_processed || prev.totalInferences,
-        activeConnections: data.active_feeds || prev.activeConnections,
-        avgLatency: Math.round(data.average_latency_ms || prev.avgLatency),
-        successRate: 99.7, // Keep this static for now
-      }));
+      if (data) {
+        setStats({
+          totalInferences: data.total_feeds_processed || 0,
+          activeConnections: data.active_feeds || 0,
+          avgLatency: Math.round(data.average_latency_ms || 0),
+          successRate: 99.7,
+        });
+      }
     } catch (error) {
       console.error("Failed to fetch metrics:", error);
     }
@@ -135,8 +137,8 @@ const Dashboard = () => {
     setLoading(true);
     try {
       const response = await api.runInference({
-        model: "celo-7b",
-        input: aiPrompt,
+        prompt: aiPrompt,
+        task_type: "GeneralQuery",
       });
       setAiResponse(response);
     } catch (error) {

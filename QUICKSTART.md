@@ -9,7 +9,7 @@ Your Celo Insight Engine is fully operational with:
 ✅ **Backend API**: http://localhost:3000
 ✅ **Real Blockchain Data**: Celo Mainnet (Alchemy + Forno fallback)
 ✅ **Real Price Data**: CoinGecko API
-⏳ **AI Engine**: Ready for vLLM (DeepSeek)
+⏳ **AI Engine**: Ready for vLLM (gpt-oss-20b)
 
 ---
 
@@ -25,7 +25,7 @@ Your Celo Insight Engine is fully operational with:
 - **Blocks**: Live from Celo mainnet via Alchemy
 - **Transactions**: Real transaction data from blocks
 - **Prices**: Live from CoinGecko (CELO, cUSD, cEUR)
-- **AI**: Ready for DeepSeek (see below)
+- **AI**: Ready for gpt-oss-20b (see below)
 
 ---
 

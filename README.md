@@ -14,7 +14,7 @@ Sentinel-X is an **AI-Enhanced Real-Time Data Inference Indexer** for the Celo b
 ### ✨ Key Features
 
 - 🔍 **Real-Time Blockchain Explorer** - Browse live Celo blocks and transactions
-- 🧠 **AI Query Engine** - Ask questions, get intelligent answers powered by DeepSeek
+- 🧠 **AI Query Engine** - Ask questions, get intelligent answers powered by gpt-oss-20b
 - 🛡️ **Smart Contract Analyzer** - Analyze contracts with AI-powered security insights
 - 📈 **Price Predictor** - Real-time prices + AI predictions for CELO, cUSD, cEUR
 - ⚡ **Sub-second Latency** - Lightning-fast responses
@@ -73,8 +73,8 @@ Open **http://localhost:8081/app** in your browser!
 # Install vLLM
 ./setup_vllm.sh
 
-# Start DeepSeek server
-vllm serve deepseek-ai/DeepSeek-OCR
+# Start gpt-oss-20b server
+vllm serve openai/gpt-oss-20b
 ```
 
 ### Option 2: HuggingFace API (Easiest)
@@ -82,7 +82,7 @@ vllm serve deepseek-ai/DeepSeek-OCR
 ```bash
 # Add to backend/.env
 HF_API_KEY=hf_your_token_here
-HF_MODEL=deepseek-ai/DeepSeek-OCR
+HF_MODEL=openai/gpt-oss-20b
 ```
 
 Get your token: https://huggingface.co/settings/tokens

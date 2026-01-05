@@ -39,12 +39,11 @@ export const getTransactions = async (limit = 10) => {
 // ============ Phase 2: The Brain ============
 
 export interface InferenceRequest {
-  model: string;
-  input: string;
-  parameters?: {
-    temperature?: number;
-    max_tokens?: number;
-  };
+  prompt: string;
+  task_type?: string;
+  context?: string[];
+  max_tokens?: number;
+  temperature?: number;
 }
 
 export interface InferenceResponse {
@@ -55,7 +54,7 @@ export interface InferenceResponse {
 }
 
 export const runInference = async (request: InferenceRequest): Promise<InferenceResponse> => {
-  const response = await fetch(`${API_BASE_URL}/inference`, {
+  const response = await fetch(`${API_BASE_URL}/ai/query`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(request),
