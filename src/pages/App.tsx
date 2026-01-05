@@ -46,6 +46,14 @@ const Dashboard = () => {
   });
   const [metrics, setMetrics] = useState<any>(null);
 
+  // Helper function to format timestamp correctly
+  const formatTimestamp = (timestamp: number) => {
+    // If timestamp is in seconds (< 10 billion), convert to milliseconds
+    // If already in milliseconds (> 10 billion), use as-is
+    const ms = timestamp < 10000000000 ? timestamp * 1000 : timestamp;
+    return new Date(ms).toLocaleString();
+  };
+
   useEffect(() => {
     fetchHealth();
     fetchBlocks();
@@ -410,7 +418,7 @@ const Dashboard = () => {
                             </div>
                             <div>
                               <span className="text-muted-foreground">Timestamp:</span>
-                              <span className="ml-2">{new Date(block.timestamp * 1000).toLocaleString()}</span>
+                              <span className="ml-2">{formatTimestamp(block.timestamp)}</span>
                             </div>
                           </div>
                         </CardContent>
