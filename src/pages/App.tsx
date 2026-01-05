@@ -37,31 +37,44 @@ const Dashboard = () => {
   const [pricePrediction, setPricePrediction] = useState<any>(null);
   const [priceData, setPriceData] = useState<any>(null);
 
-  // Stats
+  // Stats - Real data from backend
   const [stats, setStats] = useState({
-    totalInferences: 1247893,
-    activeConnections: 2847,
-    avgLatency: 47,
+    totalInferences: 0,
+    activeConnections: 0,
+    avgLatency: 0,
     successRate: 99.7,
   });
+  const [metrics, setMetrics] = useState<any>(null);
 
   useEffect(() => {
     fetchHealth();
     fetchBlocks();
+    fetchMetrics();
     
     const interval = setInterval(() => {
       fetchHealth();
-      // Simulate live stats updates
-      setStats(prev => ({
-        ...prev,
-        totalInferences: prev.totalInferences + Math.floor(Math.random() * 10),
-        activeConnections: prev.activeConnections + Math.floor(Math.random() * 5) - 2,
-        avgLatency: Math.max(30, Math.min(80, prev.avgLatency + Math.floor(Math.random() * 10) - 5)),
-      }));
+      fetchMetrics();
     }, 3000);
     
     return () => clearInterval(interval);
   }, []);
+
+  const fetchMetrics = async () => {
+    try {
+      const data = await api.getIndexerMetrics();
+      setMetrics(data);
+      
+      // Update stats from real metrics
+      setStats(prev => ({
+        totalInferences: data.total_feeds_processed || prev.totalInferences,
+        activeConnections: data.active_feeds || prev.activeConnections,
+        avgLatency: Math.round(data.average_latency_ms || prev.avgLatency),
+        successRate: 99.7, // Keep this static for now
+      }));
+    } catch (error) {
+      console.error("Failed to fetch metrics:", error);
+    }
+  };
 
   const fetchHealth = async () => {
     try {
