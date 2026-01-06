@@ -44,12 +44,14 @@ pub struct CeloAIEngine {
     model: Celo7BModel,
     cache: HashMap<String, LLMResponse>,
     http_client: Client,
+    groq_api_key: Option<String>,
+    groq_model: String,
+    ollama_url: Option<String>,
+    ollama_model: String,
     vllm_url: Option<String>,
     vllm_model: String,
     hf_api_key: Option<String>,
     hf_model: String,
-    groq_api_key: Option<String>,
-    groq_model: String,
     openai_api_key: Option<String>,
 }
 
@@ -58,6 +60,9 @@ impl CeloAIEngine {
         let groq_api_key = std::env::var("GROQ_API_KEY").ok();
         let groq_model = std::env::var("GROQ_MODEL")
             .unwrap_or_else(|_| "llama-3.3-70b-versatile".to_string());
+        let ollama_url = std::env::var("OLLAMA_URL").ok();
+        let ollama_model = std::env::var("OLLAMA_MODEL")
+            .unwrap_or_else(|_| "llama3.2:3b".to_string());
         let vllm_url = std::env::var("VLLM_URL").ok();
         let vllm_model = std::env::var("VLLM_MODEL")
             .unwrap_or_else(|_| "openai/gpt-oss-20b".to_string());
@@ -68,6 +73,8 @@ impl CeloAIEngine {
         
         let model_name = if groq_api_key.is_some() {
             groq_model.clone()
+        } else if ollama_url.is_some() {
+            ollama_model.clone()
         } else if vllm_url.is_some() {
             vllm_model.clone()
         } else if hf_api_key.is_some() {
@@ -98,6 +105,8 @@ impl CeloAIEngine {
                 .unwrap_or_else(|_| Client::new()),
             groq_api_key,
             groq_model,
+            ollama_url,
+            ollama_model,
             vllm_url,
             vllm_model,
             hf_api_key,
@@ -107,9 +116,16 @@ impl CeloAIEngine {
     }
 
     async fn call_real_ai(&self, prompt: &str) -> Option<String> {
-        // Try Groq first (fastest)
+        // Try Groq first (fastest cloud API)
         if let Some(api_key) = &self.groq_api_key {
             if let Ok(response) = self.call_groq(prompt, api_key).await {
+                return Some(response);
+            }
+        }
+
+        // Try Ollama (local, no API key needed)
+        if let Some(url) = &self.ollama_url {
+            if let Ok(response) = self.call_ollama(prompt, url).await {
                 return Some(response);
             }
         }
@@ -171,6 +187,37 @@ impl CeloAIEngine {
         }
 
         Err("Failed to get response from Groq".into())
+    }
+
+    async fn call_ollama(&self, prompt: &str, url: &str) -> Result<String, Box<dyn std::error::Error>> {
+        let payload = serde_json::json!({
+            "model": self.ollama_model,
+            "prompt": format!(
+                "You are a Celo blockchain expert. Provide clear, accurate information.\n\nUser: {}\n\nAssistant:",
+                prompt
+            ),
+            "stream": false,
+            "options": {
+                "temperature": 0.7,
+                "num_predict": 512
+            }
+        });
+
+        let response = self.http_client
+            .post(url)
+            .header("Content-Type", "application/json")
+            .json(&payload)
+            .send()
+            .await?;
+
+        if response.status().is_success() {
+            let result: serde_json::Value = response.json().await?;
+            if let Some(text) = result["response"].as_str() {
+                return Ok(text.trim().to_string());
+            }
+        }
+
+        Err("Failed to get response from Ollama".into())
     }
 
     async fn call_vllm(&self, prompt: &str, url: &str) -> Result<String, Box<dyn std::error::Error>> {

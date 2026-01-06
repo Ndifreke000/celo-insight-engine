@@ -1,0 +1,19 @@
+[Unit]
+Description=Sentinel-X Blockchain Intelligence Platform
+After=network.target
+
+[Service]
+Type=forking
+User=YOUR_USERNAME
+WorkingDirectory=/path/to/celo-insight-engine
+ExecStart=/path/to/celo-insight-engine/start.sh
+ExecStop=/path/to/celo-insight-engine/stop.sh
+Restart=on-failure
+RestartSec=10
+
+# Environment
+Environment="PATH=/usr/local/bin:/usr/bin:/bin"
+Environment="RUST_LOG=info"
+
+[Install]
+WantedBy=multi-user.target

@@ -24,6 +24,26 @@ Sentinel-X is an **AI-Enhanced Real-Time Data Inference Indexer** for the Celo b
 
 ## 🚀 Quick Start
 
+### One-Command Startup (Recommended)
+
+```bash
+# Start everything (Ollama AI + Backend + Frontend)
+./start.sh
+
+# Stop everything
+./stop.sh
+```
+
+The startup script will:
+- ✅ Install Ollama if not present
+- ✅ Download the AI model (first time only)
+- ✅ Start all services automatically
+- ✅ Configure everything for you
+
+### Manual Startup
+
+If you prefer to start services individually:
+
 ### Prerequisites
 
 - **Rust** 1.70+ ([Install](https://rustup.rs/))

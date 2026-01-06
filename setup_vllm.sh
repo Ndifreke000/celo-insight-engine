@@ -1,50 +1,23 @@
 #!/bin/bash
 
-# Sentinel-X vLLM Setup Script
-# Sets up OpenAI's gpt-oss-20b model for local AI inference
+# Sentinel-X AI Setup Script
+# This script helps set up local AI models for the Sentinel-X platform
 
-set -e
-
-echo "🚀 Sentinel-X vLLM Setup"
-echo "========================"
+echo "🚀 Sentinel-X AI Setup"
+echo "======================"
 echo ""
-echo "Setting up OpenAI gpt-oss-20b (21B parameters, runs on 16GB RAM)"
-echo "Apache 2.0 licensed - perfect for blockchain AI applications"
+echo "AI features are currently using mock responses."
 echo ""
-
-# Check if uv is installed
-if ! command -v uv &> /dev/null; then
-    echo "📦 Installing uv (Python package manager)..."
-    curl -LsSf https://astral.sh/uv/install.sh | sh
-    export PATH="$HOME/.cargo/bin:$PATH"
-fi
-
-echo "✅ uv is installed"
+echo "To enable real AI inference, you can:"
 echo ""
-
-# Install vLLM with gpt-oss support
-echo "📦 Installing vLLM with gpt-oss support..."
-uv pip install --pre vllm==0.10.1+gptoss \
-    --extra-index-url https://wheels.vllm.ai/gpt-oss/ \
-    --extra-index-url https://download.pytorch.org/whl/nightly/cu128 \
-    --index-strategy unsafe-best-match
-
+echo "1. Use a cloud API (easiest):"
+echo "   - Add GROQ_API_KEY to backend/.env"
+echo "   - Or add OPENAI_API_KEY to backend/.env"
 echo ""
-echo "✅ vLLM installed successfully!"
+echo "2. Run a local model (advanced):"
+echo "   - Install Ollama: https://ollama.ai"
+echo "   - Or set up vLLM with a compatible model"
 echo ""
-echo "🎯 To start the AI model server, run:"
-echo ""
-echo "   vllm serve openai/gpt-oss-20b"
-echo ""
-echo "Or for faster startup with lower memory:"
-echo ""
-echo "   vllm serve openai/gpt-oss-20b --max-model-len 4096"
-echo ""
-echo "The model will be available at: http://localhost:8000"
-echo ""
-echo "💡 Tips:"
-echo "  - First run will download the model (~40GB)"
-echo "  - Requires 16GB+ RAM"
-echo "  - GPU recommended but not required"
-echo "  - Set reasoning level in prompts: 'Reasoning: low/medium/high'"
+echo "For now, the platform works with mock AI responses."
+echo "All blockchain data and prices are real!"
 echo ""
