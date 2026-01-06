@@ -1,7 +1,7 @@
 # Fly.io configuration for Sentinel-X Backend
 
 app = "sentinel-x-backend"
-primary_region = "iad"  # Change to your preferred region
+primary_region = "jnb"
 
 [build]
   dockerfile = "Dockerfile"
@@ -9,8 +9,7 @@ primary_region = "iad"  # Change to your preferred region
 [env]
   PORT = "8080"
   RUST_LOG = "info"
-  # Celo RPC - Add your Alchemy key as a secret
-  # CELO_RPC_URL will be set via fly secrets
+  # CELO_RPC_URL must be set via fly secrets
 
 [http_service]
   internal_port = 8080
