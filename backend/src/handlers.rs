@@ -405,9 +405,7 @@ pub async fn celo_llm_query(
     State(state): State<AppState>,
     Json(request): Json<LLMRequest>,
 ) -> impl IntoResponse {
-    let mut state_write = state.write().await;
-    
-    // Get blockchain context for AI
+    // Get blockchain context first (with read lock)
     let blockchain_context = {
         let state_read = state.read().await;
         state_read.get_blockchain_context().await
@@ -425,6 +423,8 @@ pub async fn celo_llm_query(
         task_type: request.task_type,
     };
     
+    // Now get write lock for AI processing
+    let mut state_write = state.write().await;
     let response = state_write.ai_engine.process(enhanced_request).await;
     Json(response)
 }
