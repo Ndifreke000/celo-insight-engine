@@ -60,16 +60,19 @@ async fn main() {
     }));
 
     let cors = CorsLayer::new()
-        .allow_origin(Any)
+        .allow_origin(Any)  // Allow all origins (includes Vercel, localhost, etc.)
         .allow_methods(Any)
-        .allow_headers(Any);
+        .allow_headers(Any)
+        .allow_credentials(false);
 
     let app = Router::new()
         .nest("/api", routes::api_routes(state))
         .layer(cors)
         .layer(tower_http::trace::TraceLayer::new_for_http());
 
-    let addr = SocketAddr::from(([127, 0, 0, 1], config.port));
+    // Bind to 0.0.0.0 for Fly.io, or 127.0.0.1 for local
+    let host = std::env::var("HOST").unwrap_or_else(|_| "127.0.0.1".to_string());
+    let addr: SocketAddr = format!("{}:{}", host, config.port).parse().unwrap();
     
     tracing::info!("🚀 Sentinel-X API Server");
     tracing::info!("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
