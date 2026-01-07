@@ -32,8 +32,12 @@ RUN apt-get update && apt-get install -y \
 # Copy binary from builder
 COPY --from=builder /app/target/release/backend /app/backend
 
+# Set environment variables for Render
+ENV HOST=0.0.0.0
+ENV RUST_LOG=info
+
 # Expose port
-EXPOSE 3000
+EXPOSE 10000
 
 # Run the binary
 CMD ["/app/backend"]
