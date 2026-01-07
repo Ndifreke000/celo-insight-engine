@@ -8,8 +8,6 @@ services:
     region: oregon
     plan: free
     envVars:
-      - key: PORT
-        value: 3000
       - key: HOST
         value: 0.0.0.0
       - key: RUST_LOG
