@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import Navbar from "@/components/Navbar";
+import MobileNav from "@/components/MobileNav";
 import Comparison from "@/components/Comparison";
 import InteractiveArchitecture from "@/components/InteractiveArchitecture";
 import WhyCelo from "@/components/WhyCelo";
@@ -23,7 +24,7 @@ const Learn = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background scroll-smooth">
+    <div className="min-h-screen bg-background scroll-smooth pb-16 md:pb-0">
       <Navbar />
       
       {/* Hero Section */}
@@ -94,6 +95,7 @@ const Learn = () => {
       </div>
 
       <Footer />
+      <MobileNav />
     </div>
   );
 };

@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import MobileNav from "@/components/MobileNav";
 import { 
   ArrowLeft, 
   Code, 
@@ -59,7 +60,7 @@ const Docs = () => {
   );
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-16 md:pb-0">
       {/* Header */}
       <header className="border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
         <div className="container mx-auto px-4 sm:px-6 py-4">
@@ -696,6 +697,7 @@ ws.onmessage = (event) => {
           </section>
         </div>
       </main>
+      <MobileNav />
     </div>
   );
 };

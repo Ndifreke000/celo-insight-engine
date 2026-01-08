@@ -1,4 +1,5 @@
 import Navbar from "@/components/Navbar";
+import MobileNav from "@/components/MobileNav";
 import Hero from "@/components/Hero";
 import Products from "@/components/Products";
 import Problem from "@/components/Problem";
@@ -12,7 +13,7 @@ import { Link } from "react-router-dom";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background scroll-smooth">
+    <div className="min-h-screen bg-background scroll-smooth pb-16 md:pb-0">
       <Navbar />
       <Hero />
       <Products />
@@ -28,14 +29,14 @@ const Index = () => {
             <span className="text-xs sm:text-sm text-primary font-medium tracking-wider uppercase mb-4 block">
               Go Deeper
             </span>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6">
+            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-bold mb-6">
               Want to Learn More?
             </h2>
-            <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg text-muted-foreground mb-8 max-w-2xl mx-auto px-2">
               Explore our technical architecture, see how we compare to existing solutions, 
               dive into the developer API, and check out our roadmap.
             </p>
-            <div className="flex flex-wrap justify-center gap-4">
+            <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 sm:gap-4 px-4">
               <Button asChild size="lg" className="group">
                 <Link to="/learn">
                   <BookOpen className="w-5 h-5 mr-2" />
@@ -55,6 +56,7 @@ const Index = () => {
       
       <FAQ />
       <Footer />
+      <MobileNav />
     </div>
   );
 };
