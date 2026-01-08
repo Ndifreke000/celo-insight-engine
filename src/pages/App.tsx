@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import MobileNav from "@/components/MobileNav";
 import { 
   Brain, Search, Shield, TrendingUp, Activity, ArrowLeft, 
   Zap, Database, Lock, Globe, Cpu, BarChart3, Sparkles,
@@ -176,7 +177,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-16 md:pb-0">
       {/* Animated Background */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[150px] animate-pulse" />
@@ -651,6 +652,7 @@ const Dashboard = () => {
           </TabsContent>
         </Tabs>
       </main>
+      <MobileNav />
     </div>
   );
 };
