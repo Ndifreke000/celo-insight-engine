@@ -70,8 +70,15 @@ async fn main() {
         .layer(cors)
         .layer(tower_http::trace::TraceLayer::new_for_http());
 
-    // Bind to 0.0.0.0 for Fly.io, or 127.0.0.1 for local
-    let host = std::env::var("HOST").unwrap_or_else(|_| "127.0.0.1".to_string());
+    // Bind to 0.0.0.0 for cloud deployments (Render, Fly.io), or 127.0.0.1 for local
+    let host = std::env::var("HOST").unwrap_or_else(|_| {
+        // Default to 0.0.0.0 if PORT is set (indicates cloud deployment)
+        if std::env::var("PORT").is_ok() {
+            "0.0.0.0".to_string()
+        } else {
+            "127.0.0.1".to_string()
+        }
+    });
     let addr: SocketAddr = format!("{}:{}", host, config.port).parse().unwrap();
     
     tracing::info!("🚀 Sentinel-X API Server");
