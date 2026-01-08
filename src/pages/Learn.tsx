@@ -36,36 +36,36 @@ const Learn = () => {
         <div className="container mx-auto px-4 sm:px-6 relative z-10">
           <Link 
             to="/" 
-            className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-8 group"
+            className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-6 sm:mb-8 group"
           >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
             Back to Home
           </Link>
           
           <div className="max-w-3xl">
-            <span className="text-xs sm:text-sm text-primary font-medium tracking-wider uppercase mb-4 block">
+            <span className="text-xs sm:text-sm text-primary font-medium tracking-wider uppercase mb-3 sm:mb-4 block text-left">
               Deep Dive
             </span>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 text-left break-words">
               Learn About{" "}
               <span className="text-gradient-gold">Sentinel-X</span>
             </h1>
-            <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed">
+            <p className="text-base sm:text-xl text-muted-foreground leading-relaxed text-left">
               Explore the technical architecture, understand how we compare to existing solutions, 
               and discover our roadmap for bringing trustless AI to the blockchain.
             </p>
           </div>
 
           {/* Quick Navigation */}
-          <div className="mt-12 flex flex-wrap gap-3">
+          <div className="mt-8 sm:mt-12 flex flex-wrap gap-2 sm:gap-3">
             {sections.map((section) => (
               <a
                 key={section.id}
                 href={`#${section.id}`}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/50 border border-border/50 hover:bg-secondary hover:border-primary/30 transition-all text-sm"
+                className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-secondary/50 border border-border/50 hover:bg-secondary hover:border-primary/30 transition-all text-xs sm:text-sm"
               >
-                <section.icon className="w-4 h-4 text-primary" />
-                {section.label}
+                <section.icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary flex-shrink-0" />
+                <span className="whitespace-nowrap">{section.label}</span>
               </a>
             ))}
           </div>

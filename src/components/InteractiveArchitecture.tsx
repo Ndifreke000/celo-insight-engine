@@ -122,15 +122,15 @@ const InteractiveArchitecture = () => {
           }`}
         >
           {/* Header */}
-          <div className="text-center mb-12 sm:mb-16">
-            <span className="text-xs sm:text-sm text-primary font-medium tracking-wider uppercase mb-3 sm:mb-4 block">
+          <div className="text-center mb-10 sm:mb-16 px-2">
+            <span className="text-xs sm:text-sm text-primary font-medium tracking-wider uppercase mb-2 sm:mb-4 block">
               Interactive Architecture
             </span>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6">
+            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-bold mb-3 sm:mb-6">
               Built for{" "}
-              <span className="text-gradient-gold">Speed & Verifiability</span>
+              <span className="text-gradient-gold block sm:inline">Speed & Verifiability</span>
             </h2>
-            <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto px-4">
+            <p className="text-sm sm:text-lg text-muted-foreground max-w-2xl mx-auto">
               Click on any layer to explore. Watch data flow through our real-time pipeline.
             </p>
           </div>
@@ -158,7 +158,7 @@ const InteractiveArchitecture = () => {
               </div>
 
               {/* Layer Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 relative z-10">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 relative z-10 px-1 sm:px-0">
                 {layers.map((layer, index) => {
                   const IconComponent = layer.icon;
                   const isActive = activeLayer === layer.id;
@@ -174,7 +174,7 @@ const InteractiveArchitecture = () => {
                     >
                       {/* Card */}
                       <div
-                        className={`relative p-6 rounded-2xl border backdrop-blur transition-all duration-500 ${
+                        className={`relative p-4 sm:p-6 rounded-2xl border backdrop-blur transition-all duration-500 ${
                           isActive
                             ? `bg-gradient-to-br ${layer.color} border-white/20 ${layer.glowColor} shadow-2xl`
                             : "bg-card/80 border-border/50 hover:border-primary/30"
@@ -193,34 +193,34 @@ const InteractiveArchitecture = () => {
 
                         {/* Icon */}
                         <div
-                          className={`w-14 h-14 rounded-xl flex items-center justify-center mb-4 transition-all duration-300 ${
+                          className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center mb-3 sm:mb-4 transition-all duration-300 ${
                             isActive
                               ? "bg-white/20"
                               : `bg-gradient-to-br ${layer.color} opacity-80`
                           }`}
                         >
                           <IconComponent
-                            className={`w-7 h-7 ${isActive ? "text-white" : "text-white"}`}
+                            className={`w-6 h-6 sm:w-7 sm:h-7 ${isActive ? "text-white" : "text-white"}`}
                           />
                         </div>
 
                         {/* Content */}
                         <h3
-                          className={`text-lg font-bold mb-1 ${
+                          className={`text-base sm:text-lg font-bold mb-1 ${
                             isActive ? "text-white" : "text-foreground"
                           }`}
                         >
                           {layer.title}
                         </h3>
                         <p
-                          className={`text-xs font-mono mb-3 ${
+                          className={`text-xs font-mono mb-2 sm:mb-3 ${
                             isActive ? "text-white/80" : "text-muted-foreground"
                           }`}
                         >
                           {layer.tech}
                         </p>
                         <p
-                          className={`text-sm ${
+                          className={`text-xs sm:text-sm leading-relaxed ${
                             isActive ? "text-white/90" : "text-muted-foreground"
                           }`}
                         >
