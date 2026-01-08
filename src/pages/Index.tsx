@@ -1,18 +1,14 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Products from "@/components/Products";
-import LiveDashboard from "@/components/LiveDashboard";
-import AIPlayground from "@/components/AIPlayground";
-import DeveloperAPI from "@/components/DeveloperAPI";
 import Problem from "@/components/Problem";
 import Solution from "@/components/Solution";
-import Comparison from "@/components/Comparison";
-import InteractiveArchitecture from "@/components/InteractiveArchitecture";
 import UseCases from "@/components/UseCases";
-import WhyCelo from "@/components/WhyCelo";
-import Roadmap from "@/components/Roadmap";
 import FAQ from "@/components/FAQ";
 import Footer from "@/components/Footer";
+import { Button } from "@/components/ui/button";
+import { ArrowRight, BookOpen } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Index = () => {
   return (
@@ -20,16 +16,43 @@ const Index = () => {
       <Navbar />
       <Hero />
       <Products />
-      <LiveDashboard />
-      <AIPlayground />
-      <DeveloperAPI />
       <Problem />
       <Solution />
-      <Comparison />
-      <InteractiveArchitecture />
       <UseCases />
-      <WhyCelo />
-      <Roadmap />
+      
+      {/* Learn More CTA Section */}
+      <section className="py-16 sm:py-24 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5" />
+        <div className="container mx-auto px-4 sm:px-6 relative z-10">
+          <div className="max-w-4xl mx-auto text-center">
+            <span className="text-xs sm:text-sm text-primary font-medium tracking-wider uppercase mb-4 block">
+              Go Deeper
+            </span>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6">
+              Want to Learn More?
+            </h2>
+            <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
+              Explore our technical architecture, see how we compare to existing solutions, 
+              dive into the developer API, and check out our roadmap.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <Button asChild size="lg" className="group">
+                <Link to="/learn">
+                  <BookOpen className="w-5 h-5 mr-2" />
+                  Explore Technical Details
+                  <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </Button>
+              <Button asChild size="lg" variant="outline">
+                <Link to="/docs">
+                  Read Documentation
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+      
       <FAQ />
       <Footer />
     </div>
