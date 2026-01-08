@@ -10,9 +10,7 @@ const Navbar = () => {
     { label: "Products", href: "#products" },
     { label: "Problem", href: "#problem" },
     { label: "Solution", href: "#solution" },
-    { label: "Architecture", href: "#architecture" },
     { label: "Use Cases", href: "#use-cases" },
-    { label: "Roadmap", href: "#roadmap" },
     { label: "FAQ", href: "#faq" },
   ];
 
@@ -77,6 +75,11 @@ const Navbar = () => {
 
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center gap-3">
+            <Link to="/learn">
+              <Button variant="ghost" size="sm">
+                Learn
+              </Button>
+            </Link>
             <Button variant="ghost" size="sm" onClick={handleDocs}>
               Docs
             </Button>
@@ -111,6 +114,11 @@ const Navbar = () => {
                 </a>
               ))}
               <div className="flex flex-col gap-2 pt-4 border-t border-border/50">
+                <Link to="/learn">
+                  <Button variant="ghost" size="sm" className="justify-start w-full">
+                    Learn
+                  </Button>
+                </Link>
                 <Button variant="ghost" size="sm" className="justify-start" onClick={handleDocs}>
                   Docs
                 </Button>
