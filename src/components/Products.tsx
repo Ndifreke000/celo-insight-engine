@@ -38,7 +38,7 @@ const Products = () => {
         <div className="absolute bottom-1/4 -right-32 w-64 h-64 bg-accent/10 rounded-full blur-[100px]" />
       </div>
 
-      <div className="container mx-auto px-4 sm:px-6 relative z-10">
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 relative z-10">
         <div 
           ref={sectionRef}
           className={`text-center mb-12 sm:mb-16 transition-all duration-700 ${
@@ -58,7 +58,7 @@ const Products = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 max-w-6xl mx-auto relative">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 max-w-7xl mx-auto relative">
           {/* Animated Connection Line - Desktop Only */}
           <div className="hidden lg:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-px z-20">
             {/* Flowing particles */}

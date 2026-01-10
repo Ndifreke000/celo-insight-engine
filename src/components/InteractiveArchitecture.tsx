@@ -114,7 +114,7 @@ const InteractiveArchitecture = () => {
         <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-accent/5 rounded-full blur-[120px]" />
       </div>
 
-      <div className="container mx-auto px-4 sm:px-6 relative z-10">
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 relative z-10">
         <div
           ref={sectionRef}
           className={`transition-all duration-700 ${
@@ -136,7 +136,7 @@ const InteractiveArchitecture = () => {
           </div>
 
           {/* Interactive Diagram */}
-          <div className="max-w-6xl mx-auto">
+          <div className="max-w-7xl mx-auto">
             {/* Main Pipeline */}
             <div className="relative">
               {/* Connection Lines */}
@@ -294,7 +294,7 @@ const InteractiveArchitecture = () => {
             </div>
 
             {/* Code Example */}
-            <div className="mt-12 sm:mt-16 max-w-3xl mx-auto">
+            <div className="mt-12 sm:mt-16 max-w-4xl mx-auto">
               <div className="p-4 sm:p-6 rounded-2xl bg-card border border-border/50 hover:border-primary/30 transition-colors duration-300">
                 <div className="flex items-center gap-2 mb-4">
                   <div className="w-3 h-3 rounded-full bg-destructive/60" />

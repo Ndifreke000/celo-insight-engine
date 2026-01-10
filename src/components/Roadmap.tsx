@@ -105,7 +105,7 @@ const Roadmap = () => {
 
   return (
     <section id="roadmap" className="py-16 sm:py-24 lg:py-32 relative bg-secondary/20">
-      <div className="container mx-auto px-4 sm:px-6">
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
         <div 
           ref={sectionRef}
           className={`text-center mb-12 sm:mb-16 transition-all duration-700 ${

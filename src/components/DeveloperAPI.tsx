@@ -112,7 +112,7 @@ const DeveloperAPI = () => {
 
   return (
     <section id="api" className="py-16 sm:py-24 relative bg-secondary/20">
-      <div className="container mx-auto px-4 sm:px-6">
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
         <div className="text-center mb-12 sm:mb-16">
           <span className="text-xs sm:text-sm text-primary font-medium tracking-wider uppercase mb-3 sm:mb-4 block">
             For Developers
@@ -126,7 +126,7 @@ const DeveloperAPI = () => {
           </p>
         </div>
 
-        <div className="max-w-6xl mx-auto space-y-8">
+        <div className="max-w-7xl mx-auto space-y-8">
           {/* Quick Start */}
           <Card>
             <CardHeader>

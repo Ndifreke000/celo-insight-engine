@@ -12,7 +12,7 @@ const Footer = () => {
           <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-accent/10 rounded-full blur-[120px]" />
         </div>
 
-        <div className="container mx-auto px-4 sm:px-6 relative z-10">
+        <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6">
               Ready to Give Your AI{" "}
@@ -37,7 +37,7 @@ const Footer = () => {
 
       {/* Footer Links */}
       <div className="border-t border-border/50">
-        <div className="container mx-auto px-4 sm:px-6 py-8 sm:py-12">
+        <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 py-8 sm:py-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8 sm:mb-12">
             <div className="col-span-2 md:col-span-1">
               <a href="#" className="flex items-center gap-2 sm:gap-3 mb-4">

@@ -57,7 +57,7 @@ const Comparison = () => {
 
   return (
     <section className="py-16 sm:py-24 lg:py-32 relative bg-secondary/20">
-      <div className="container mx-auto px-4 sm:px-6">
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
         <div 
           ref={sectionRef}
           className={`text-center mb-12 sm:mb-16 transition-all duration-700 ${
@@ -77,7 +77,7 @@ const Comparison = () => {
           </p>
         </div>
 
-        <div className={`max-w-5xl mx-auto transition-all duration-700 delay-200 ${
+        <div className={`max-w-6xl mx-auto transition-all duration-700 delay-200 ${
           sectionVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
         }`}>
           {/* Desktop Table */}

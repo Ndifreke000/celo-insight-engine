@@ -65,7 +65,7 @@ const FAQ = () => {
 
   return (
     <section id="faq" className="py-16 sm:py-24 relative">
-      <div className="container mx-auto px-4 sm:px-6">
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
         <div
           ref={sectionRef}
           className={`transition-all duration-700 ${
@@ -86,7 +86,7 @@ const FAQ = () => {
           </div>
 
           {/* FAQ Accordion */}
-          <div className="max-w-3xl mx-auto">
+          <div className="max-w-4xl mx-auto">
             <Accordion type="single" collapsible className="space-y-4">
               {faqs.map((faq, index) => (
                 <AccordionItem
