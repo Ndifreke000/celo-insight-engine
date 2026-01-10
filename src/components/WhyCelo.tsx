@@ -29,7 +29,7 @@ const WhyCelo = () => {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] sm:w-[800px] h-[600px] sm:h-[800px] bg-primary/5 rounded-full blur-[150px]" />
       </div>
 
-      <div className="container mx-auto px-4 sm:px-6 relative z-10">
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 relative z-10">
         <div 
           ref={sectionRef}
           className={`text-center mb-12 sm:mb-16 transition-all duration-700 ${
@@ -49,7 +49,7 @@ const WhyCelo = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 max-w-6xl mx-auto">
           {reasons.map((reason, index) => (
             <div
               key={index}

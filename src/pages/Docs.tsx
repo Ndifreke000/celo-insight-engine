@@ -63,7 +63,7 @@ const Docs = () => {
     <div className="min-h-screen bg-background pb-16 md:pb-0">
       {/* Header */}
       <header className="border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
-        <div className="container mx-auto px-4 sm:px-6 py-4">
+        <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Link to="/" className="flex items-center gap-2 group">
@@ -99,7 +99,7 @@ const Docs = () => {
           heroVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
         }`}
       >
-        <div className="container mx-auto px-4 sm:px-6 text-center">
+        <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 text-center">
           <Badge className="mb-4 bg-primary/10 text-primary border-primary/20">
             Complete Documentation
           </Badge>
@@ -122,8 +122,8 @@ const Docs = () => {
       </div>
 
       {/* Content */}
-      <main className="container mx-auto px-4 sm:px-6 py-12">
-        <div className="max-w-5xl mx-auto space-y-20">
+      <main className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 py-12">
+        <div className="max-w-6xl mx-auto space-y-20">
           
           {/* Overview Section */}
           <section 

@@ -34,7 +34,7 @@ const Learn = () => {
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
         <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-accent/10 rounded-full blur-3xl" />
         
-        <div className="container mx-auto px-4 sm:px-6 relative z-10">
+        <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 relative z-10">
           <Link 
             to="/" 
             className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-6 sm:mb-8 group"
@@ -43,7 +43,7 @@ const Learn = () => {
             Back to Home
           </Link>
           
-          <div className="max-w-3xl">
+          <div className="max-w-4xl">
             <span className="text-xs sm:text-sm text-primary font-medium tracking-wider uppercase mb-3 sm:mb-4 block text-left">
               Deep Dive
             </span>

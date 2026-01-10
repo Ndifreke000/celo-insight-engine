@@ -24,7 +24,7 @@ const Index = () => {
       {/* Learn More CTA Section */}
       <section className="py-16 sm:py-24 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5" />
-        <div className="container mx-auto px-4 sm:px-6 relative z-10">
+        <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <span className="text-xs sm:text-sm text-primary font-medium tracking-wider uppercase mb-4 block">
               Go Deeper

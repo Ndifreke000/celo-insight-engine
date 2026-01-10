@@ -21,7 +21,7 @@ const Solution = () => {
 
   return (
     <section id="solution" className="py-16 sm:py-24 lg:py-32 relative bg-secondary/20">
-      <div className="container mx-auto px-4 sm:px-6">
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
         <div 
           ref={sectionRef}
           className={`text-center mb-12 sm:mb-16 transition-all duration-700 ${
@@ -41,7 +41,7 @@ const Solution = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 max-w-6xl mx-auto mb-12 sm:mb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 max-w-7xl mx-auto mb-12 sm:mb-16">
           {/* Engine A */}
           <div 
             className={`group p-6 sm:p-8 rounded-2xl bg-card border border-border/50 hover:border-primary/50 transition-all duration-700 ${
@@ -118,7 +118,7 @@ const Solution = () => {
         {/* Workflow */}
         <div 
           ref={workflowRef}
-          className="max-w-5xl mx-auto px-4"
+          className="max-w-6xl mx-auto px-4"
         >
           <h3 className={`text-xl sm:text-2xl font-bold text-center mb-8 sm:mb-12 transition-all duration-700 ${
             workflowVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"

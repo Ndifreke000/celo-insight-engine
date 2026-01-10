@@ -28,7 +28,7 @@ const Problem = () => {
 
   return (
     <section id="problem" className="py-16 sm:py-24 lg:py-32 relative">
-      <div className="container mx-auto px-4 sm:px-6">
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16">
         <div 
           ref={sectionRef}
           className={`text-center mb-12 sm:mb-16 transition-all duration-700 ${
@@ -48,7 +48,7 @@ const Problem = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 max-w-7xl mx-auto">
           {problems.map((problem, index) => (
             <div
               key={index}
